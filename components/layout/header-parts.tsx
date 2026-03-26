@@ -3,8 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState, useCallback } from "react";
-import { useUser } from "@/hooks/use-user";
-import { useProfile } from "@/features/configuracoes/hooks/use-settings";
 import { useAuthStore } from "@/stores/auth-store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -32,7 +30,7 @@ import {
 import { useLogout } from "@/hooks/use-logout";
 
 // Re-export from dedicated module
-export { NotificationItem, NotificationBell } from "./notification-bell";
+export { NotificationBell } from "./notification-bell";
 
 // ── Theme Toggle ──────────────────────────────────────
 
@@ -114,14 +112,14 @@ export function SearchButton() {
 
 export function UserAvatar() {
   const router = useRouter();
-  const { user } = useUser();
-  const { data: profile } = useProfile();
+  const user = useAuthStore((s) => s.user);
   const roleLabel = useAuthStore((s) => s.roleLabel);
   const handleLogout = useLogout();
 
-  const displayName = profile?.full_name || user?.email || "Usuário";
-  const initials = profile?.full_name
-    ? profile.full_name
+  const displayName = user?.user_metadata?.full_name || user?.email || "Usuário";
+  const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
+  const initials = user?.user_metadata?.full_name
+    ? String(user.user_metadata.full_name)
         .split(" ")
         .map((n: string) => n[0])
         .slice(0, 2)
@@ -140,8 +138,8 @@ export function UserAvatar() {
           aria-label="Menu do usuário"
         >
           <Avatar className="h-9 w-9 ring-2 ring-border/40">
-            {profile?.avatar_url && (
-              <AvatarImage src={profile.avatar_url} alt={displayName} />
+            {avatarUrl && (
+              <AvatarImage src={avatarUrl} alt={displayName} />
             )}
             <AvatarFallback className="bg-gradient-to-br from-slate-400/80 via-slate-500/70 to-blue-600/60 text-xs font-semibold text-white">
               {initials}

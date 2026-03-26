@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
-import { PROJECT_CONFIG } from "@/config/project-config";
 import { Providers } from "@/components/providers";
 import { Preloader } from "@/components/layout/preloader";
 import "./globals.css";
@@ -17,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: PROJECT_CONFIG.name,
-  description: PROJECT_CONFIG.description,
+  title: "TBO Academy",
+  description: "TBO Academy - Plataforma de aprendizado",
 };
 
 export default function RootLayout({
