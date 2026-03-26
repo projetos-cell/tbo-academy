@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import { sendWelcomeEmail } from "@/lib/email";
 
 /**
  * Ensures the user has a profile and tenant_member record.
@@ -23,7 +24,7 @@ async function ensureProfileExists(userId: string, userEmail: string, fullName: 
     .eq("id", userId)
     .single();
 
-  if (existing) return; // Profile exists, nothing to do
+  if (existing) return; // Profile exists — not a first login, nothing to do
 
   // Find the first active tenant (TBO)
   const { data: tenant } = await admin
@@ -43,6 +44,10 @@ async function ensureProfileExists(userId: string, userEmail: string, fullName: 
     .eq("tenant_id", tenant.id)
     .eq("slug", "colaborador")
     .single();
+
+  // Send welcome email for first-time users (fire-and-forget — do not await)
+  const displayName = fullName ?? userEmail.split("@")[0];
+  sendWelcomeEmail({ to: userEmail, name: displayName }).catch(() => {/* ignore email errors */});
 
   // Create profile
   await admin.from("profiles").insert({

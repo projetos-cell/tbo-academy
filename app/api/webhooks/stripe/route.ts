@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createServiceClient } from "@/lib/supabase/service"
 import { createLogger } from "@/lib/logger"
+import { sendPurchaseConfirmationEmail } from "@/lib/email"
 
 // Stripe SDK is a runtime dependency — installed with: pnpm add stripe
 // STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET must be set in environment
@@ -189,6 +190,23 @@ async function handleCheckoutSessionCompleted(obj: unknown) {
   })
 
   logger.info("Academy entitlement created", { userId, productSlug: normalizedSlug })
+
+  // Send purchase confirmation email (fire-and-forget)
+  try {
+    const supabase = createServiceClient()
+    const { data: { user } } = await supabase.auth.admin.getUserById(userId)
+    if (user?.email) {
+      const name = (user.user_metadata?.full_name as string) ?? (user.user_metadata?.name as string) ?? user.email.split("@")[0]
+      sendPurchaseConfirmationEmail({
+        to: user.email,
+        name,
+        productName: normalizedSlug,
+        planSlug: normalizedSlug,
+      }).catch(() => {/* ignore email errors */})
+    }
+  } catch {
+    logger.warn("Could not send purchase confirmation email", { userId })
+  }
 }
 
 async function handleSubscriptionUpdated(obj: unknown) {
