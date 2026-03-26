@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   Dialog,
@@ -8,7 +10,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { IconCheck, IconCrown, IconRocket, IconStar } from "@tabler/icons-react"
+import { IconCheck, IconCrown, IconLoader2, IconRocket, IconStar } from "@tabler/icons-react"
 
 interface PricingDialogProps {
   open: boolean
@@ -72,11 +74,41 @@ const PLANS = [
 ] as const
 
 export function PricingDialog({ open, onOpenChange }: PricingDialogProps) {
+  const router = useRouter()
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
+
+  async function handleCheckout(planId: string) {
+    if (planId === "enterprise") {
+      // Redirect to contact for enterprise
+      window.open("mailto:contato@tbo.com.br?subject=TBO Academy Enterprise", "_blank")
+      return
+    }
+
+    setLoadingPlan(planId)
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: planId }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? "Erro ao iniciar checkout")
+      if (data.url) {
+        router.push(data.url)
+      }
+    } catch (err) {
+      console.error("Checkout error:", err)
+      alert(err instanceof Error ? err.message : "Erro ao iniciar checkout")
+    } finally {
+      setLoadingPlan(null)
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl p-0 gap-0 overflow-hidden border-0">
         {/* Header */}
-        <div className="bg-[#0a1f1d] px-8 py-6 text-white">
+        <div className="bg-[#000000] px-8 py-6 text-white">
           <DialogHeader>
             <DialogTitle className="text-xl font-extrabold tracking-tight uppercase text-white">
               TBO Academy
@@ -97,11 +129,11 @@ export function PricingDialog({ open, onOpenChange }: PricingDialogProps) {
                 key={plan.id}
                 className={cn(
                   "relative flex flex-col p-6",
-                  plan.featured && "bg-[#b8f724]/[0.03]"
+                  plan.featured && "bg-[#BAF241]/[0.03]"
                 )}
               >
                 {plan.featured && (
-                  <div className="absolute top-0 inset-x-0 h-[3px] bg-[#b8f724]" />
+                  <div className="absolute top-0 inset-x-0 h-[3px] bg-[#BAF241]" />
                 )}
 
                 {/* Plan header */}
@@ -110,14 +142,14 @@ export function PricingDialog({ open, onOpenChange }: PricingDialogProps) {
                     <Icon
                       className={cn(
                         "size-5",
-                        plan.featured ? "text-[#b8f724]" : "text-zinc-400"
+                        plan.featured ? "text-[#BAF241]" : "text-zinc-400"
                       )}
                     />
                     <span className="text-[10px] font-bold tracking-[1.5px] uppercase text-zinc-500">
                       {plan.name}
                     </span>
                     {plan.featured && (
-                      <span className="text-[7px] font-bold tracking-[1px] uppercase bg-[#b8f724] text-[#0a1f1d] px-2 py-0.5 rounded-full">
+                      <span className="text-[7px] font-bold tracking-[1px] uppercase bg-[#BAF241] text-[#000000] px-2 py-0.5 rounded-full">
                         Popular
                       </span>
                     )}
@@ -142,7 +174,7 @@ export function PricingDialog({ open, onOpenChange }: PricingDialogProps) {
                       <IconCheck
                         className={cn(
                           "size-3.5 shrink-0 mt-0.5",
-                          plan.featured ? "text-[#b8f724]" : "text-emerald-500"
+                          plan.featured ? "text-[#BAF241]" : "text-emerald-500"
                         )}
                       />
                       <span className="text-[10px] text-zinc-600 leading-snug dark:text-zinc-400">
@@ -154,15 +186,20 @@ export function PricingDialog({ open, onOpenChange }: PricingDialogProps) {
 
                 {/* CTA */}
                 <button
+                  disabled={loadingPlan !== null}
+                  onClick={() => handleCheckout(plan.id)}
                   className={cn(
-                    "w-full rounded-lg py-3 text-[10px] font-bold tracking-[1.5px] uppercase transition-all duration-200 hover:-translate-y-0.5",
+                    "w-full rounded-lg py-3 text-[10px] font-bold tracking-[1.5px] uppercase transition-all duration-200 hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0",
                     plan.featured
-                      ? "bg-[#b8f724] text-[#0a1f1d] hover:shadow-[0_6px_24px_rgba(184,247,36,0.25)]"
+                      ? "bg-[#BAF241] text-[#000000] hover:shadow-[0_6px_24px_rgba(184,247,36,0.25)]"
                       : plan.id === "enterprise"
-                        ? "bg-[#0a1f1d] text-white hover:shadow-lg"
-                        : "border border-zinc-200 text-zinc-600 hover:border-[#b8f724] hover:text-[#b8f724] dark:border-zinc-700 dark:text-zinc-400"
+                        ? "bg-[#000000] text-white hover:shadow-lg"
+                        : "border border-zinc-200 text-zinc-600 hover:border-[#BAF241] hover:text-[#BAF241] dark:border-zinc-700 dark:text-zinc-400"
                   )}
                 >
+                  {loadingPlan === plan.id && (
+                    <IconLoader2 className="size-3 animate-spin" />
+                  )}
                   {plan.id === "enterprise" ? "Falar com consultor" : "Começar agora"}
                 </button>
               </div>
