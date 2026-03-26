@@ -23,6 +23,7 @@ import { usePreviewStore } from "@/features/diagnostico/stores/preview-store"
 import { usePreviewSession } from "@/features/academy/hooks/use-preview-session"
 import type { CourseModule } from "@/features/courses/types"
 import { toast } from "sonner"
+import { useCourseProgress } from "@/features/courses/hooks/use-course-progress"
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
   "Introdução": "from-black via-zinc-900 to-zinc-800",
@@ -41,6 +42,7 @@ export default function AcademyCourseDetailPage() {
   const isPreview = usePreviewStore((s) => s.isPreview)
   const { isCourseUnlocked, trackCourseExplored } = usePreviewSession()
   const [selectedModule, setSelectedModule] = useState<CourseModule | null>(null)
+  const { markModuleComplete, markModuleInProgress, isModuleCompleted } = useCourseProgress()
 
   const course = useMemo(
     () => MOCK_COURSES.find((c) => c.id === courseId),
@@ -78,11 +80,19 @@ export default function AcademyCourseDetailPage() {
     if (mod.status === "locked") return
     if (mod.videoUrl) {
       setSelectedModule(mod)
+      markModuleInProgress(mod.id)
     } else {
       toast.info("Conteúdo em breve", {
         description: `"${mod.title}" será disponibilizado na próxima fase da plataforma.`,
       })
     }
+  }
+
+  const handleMarkComplete = (mod: CourseModule) => {
+    markModuleComplete(mod.id)
+    toast.success("Módulo concluído!", {
+      description: `"${mod.title}" marcado como concluído.`,
+    })
   }
 
   return (
@@ -163,8 +173,9 @@ export default function AcademyCourseDetailPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {modules.map((mod) => {
               const isLocked = mod.status === "locked"
-              const isCompleted = mod.status === "completed"
-              const isInProgress = mod.status === "in_progress"
+              const dbCompleted = isModuleCompleted(mod.id)
+              const isCompleted = dbCompleted || mod.status === "completed"
+              const isInProgress = !isCompleted && mod.status === "in_progress"
 
               return (
                 <button
@@ -219,11 +230,22 @@ export default function AcademyCourseDetailPage() {
                     <p className="text-sm font-semibold text-black truncate">
                       {mod.title}
                     </p>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center justify-between gap-2 mt-1">
                       <span className="flex items-center gap-1 text-xs text-muted-foreground">
                         <IconClock className="size-3" />
                         {mod.duration}
                       </span>
+                      {!isLocked && !isCompleted && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleMarkComplete(mod)
+                          }}
+                          className="text-[10px] font-semibold text-[#BAF241] hover:text-black transition-colors"
+                        >
+                          Concluir
+                        </button>
+                      )}
                     </div>
                   </div>
                 </button>
