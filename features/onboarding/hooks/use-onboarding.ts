@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { useAuthStore } from "@/stores/auth-store";
-import { uploadAvatar } from "@/features/configuracoes/services/settings";
+import { uploadAvatar } from "@/features/onboarding/services/avatar";
 import {
   getOnboardingStatus,
   skipOnboarding,
