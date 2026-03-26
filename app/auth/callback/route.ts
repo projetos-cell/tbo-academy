@@ -8,7 +8,12 @@ import { sendWelcomeEmail } from "@/lib/email";
  * Ensures the user has a profile and tenant_member record.
  * Called after first Google OAuth login to bootstrap the user.
  */
-async function ensureProfileExists(userId: string, userEmail: string, fullName: string | null, avatarUrl: string | null) {
+async function ensureProfileExists(
+  userId: string,
+  userEmail: string,
+  fullName: string | null,
+  avatarUrl: string | null,
+) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!supabaseUrl || !serviceKey) return;
@@ -18,11 +23,7 @@ async function ensureProfileExists(userId: string, userEmail: string, fullName: 
   });
 
   // Check if profile already exists
-  const { data: existing } = await admin
-    .from("profiles")
-    .select("id")
-    .eq("id", userId)
-    .single();
+  const { data: existing } = await admin.from("profiles").select("id").eq("id", userId).single();
 
   if (existing) return; // Profile exists — not a first login, nothing to do
 
@@ -47,7 +48,9 @@ async function ensureProfileExists(userId: string, userEmail: string, fullName: 
 
   // Send welcome email for first-time users (fire-and-forget — do not await)
   const displayName = fullName ?? userEmail.split("@")[0];
-  sendWelcomeEmail({ to: userEmail, name: displayName }).catch(() => {/* ignore email errors */});
+  sendWelcomeEmail({ to: userEmail, name: displayName }).catch(() => {
+    /* ignore email errors */
+  });
 
   // Create profile
   await admin.from("profiles").insert({
@@ -78,7 +81,7 @@ async function ensureProfileExists(userId: string, userEmail: string, fullName: 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/projetos";
+  const next = searchParams.get("next") ?? "/explorar";
 
   if (code) {
     const cookieStore = await cookies();
@@ -97,13 +100,15 @@ export async function GET(request: Request) {
             }
           },
         },
-      }
+      },
     );
 
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       // Ensure profile exists for first-time OAuth users
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         const meta = user.user_metadata as Record<string, unknown> | undefined;
         await ensureProfileExists(
