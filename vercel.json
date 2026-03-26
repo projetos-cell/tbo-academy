@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "installCommand": "npm install",
+  "outputDirectory": ".next",
+  "crons": [
+    {
+      "path": "/api/finance/data-quality",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/finance/sync-omie",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/finance/sync-extrato",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/finance/generate-recurring",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/finance/generate-contract-revenue",
+      "schedule": "0 4 * * *"
+    }
+  ]
+}

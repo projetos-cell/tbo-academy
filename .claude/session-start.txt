@@ -1,0 +1,7 @@
+d299060 docs(audit): ciclo 33 — sidebar nav-group wiring + demand comment error handling
+958df6a feat(sidebar): wire + button + Recolher todas + demand comment error handling
+d1a5e84 docs(audit): ciclo 32 — header + sortable-nav-item + custom-field-config splits
+797ab54 refactor(shared): split custom-field-config.tsx 328L → 149L + dialog (202L)
+bb30403 refactor(sidebar): split sortable-nav-item.tsx 357L → 266L + parts (147L)
+ frontend/.claude/session-start.txt | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
