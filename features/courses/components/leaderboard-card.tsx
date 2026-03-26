@@ -3,10 +3,12 @@
 import { IconTrophy } from "@tabler/icons-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useLeaderboard } from "../hooks/use-leaderboard"
 import type { LeaderboardEntry } from "../types"
 
 interface LeaderboardCardProps {
-  entries: LeaderboardEntry[]
+  entries?: LeaderboardEntry[]
 }
 
 const RANK_STYLES: Record<number, string> = {
@@ -21,7 +23,10 @@ const RANK_BG: Record<number, string> = {
   3: "ring-2 ring-orange-400",
 }
 
-export function LeaderboardCard({ entries }: LeaderboardCardProps) {
+export function LeaderboardCard({ entries: entriesProp }: LeaderboardCardProps) {
+  const { leaderboard: fetchedEntries, isLoading } = useLeaderboard()
+  const entries = entriesProp ?? fetchedEntries
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -31,6 +36,14 @@ export function LeaderboardCard({ entries }: LeaderboardCardProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
+        {isLoading && !entriesProp && Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-3 py-1">
+            <Skeleton className="size-5 rounded" />
+            <Skeleton className="size-8 rounded-full" />
+            <Skeleton className="h-4 flex-1" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+        ))}
         {entries.map((entry) => (
           <div
             key={entry.id}
