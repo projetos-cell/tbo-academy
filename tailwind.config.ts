@@ -2,17 +2,13 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: "class",
-  content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./lib/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./app/**/*.{js,ts,jsx,tsx,mdx}", "./components/**/*.{js,ts,jsx,tsx,mdx}", "./lib/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
         tbo: {
           orange: {
-            50:  "#fff4ec",
+            50: "#fff4ec",
             100: "#ffe5cc",
             200: "#ffc999",
             300: "#ffad66",
@@ -27,6 +23,14 @@ const config: Config = {
           },
           black: "#0a0a0a",
           white: "#fafafa",
+          // ── TBO Academy Design System ──────────────────────────
+          academy: {
+            forest: "#02261C", // 1 — verde floresta profundo (background escuro)
+            green: "#2E5902", // 2 — verde médio
+            lime: "#BAF241", // 3 — verde limão neon (accent primário)
+            black: "#000000", // 4 — preto
+            offwhite: "#F2F2F2", // 5 — branco suave
+          },
         },
       },
     },

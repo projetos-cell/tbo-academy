@@ -45,6 +45,13 @@
   --radius-bento-lg: 1.5rem;
   --color-glass: var(--glass);
   --color-glass-border: var(--glass-border);
+
+  /* ── TBO Academy palette ── */
+  --color-academy-forest: var(--academy-forest);
+  --color-academy-green: var(--academy-green);
+  --color-academy-lime: var(--academy-lime);
+  --color-academy-black: var(--academy-black);
+  --color-academy-offwhite: var(--academy-offwhite);
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
@@ -121,6 +128,13 @@
   /* ── Glass (Academy) ── */
   --glass: oklch(0.98 0 0 / 0.6);
   --glass-border: oklch(0.9 0 0 / 0.3);
+
+  /* ── TBO Academy Design System ── */
+  --academy-forest: #02261c; /* verde floresta profundo */
+  --academy-green: #2e5902; /* verde médio */
+  --academy-lime: #baf241; /* verde limão neon — accent primário */
+  --academy-black: #000000; /* preto */
+  --academy-offwhite: #f2f2f2; /* branco suave */
 }
 
 .dark {
@@ -176,6 +190,98 @@
   --glass-border: oklch(1 0 0 / 0.05);
 }
 
+/* ─────────────────────────────────────────────────────────
+   TBO Academy Theme — 60/30/10 color rule
+   MUST come after .dark to win the cascade
+───────────────────────────────────────────────────────── */
+.academy-theme {
+  /* ── 60 % — #F2F2F2 offwhite dominante ── */
+  --background: #f2f2f2;
+  --card: #ffffff;
+  --popover: #ffffff;
+
+  /* Texto: preto para contraste máximo */
+  --foreground: #000000;
+  --card-foreground: #000000;
+  --popover-foreground: #000000;
+
+  /* ── 10 % — Accent: lime #BAF241 ── */
+  --primary: #baf241;
+  --primary-foreground: #000000;
+
+  /* ── 30 % — Preto: superfícies de contraste ── */
+  --secondary: #000000;
+  --secondary-foreground: #f2f2f2;
+  --muted: #e8e8e8;
+  --muted-foreground: rgba(0, 0, 0, 0.5);
+  --accent: #baf241;
+  --accent-foreground: #000000;
+
+  /* Destrutivo */
+  --destructive: oklch(0.55 0.22 25);
+
+  /* Bordas quase invisíveis — elevação por sombra */
+  --border: rgba(0, 0, 0, 0.06);
+  --input: #ffffff;
+  --ring: #baf241;
+
+  /* Charts */
+  --chart-1: #baf241;
+  --chart-2: #000000;
+  --chart-3: #2e5902;
+  --chart-4: #02261c;
+  --chart-5: #f2f2f2;
+
+  /* Sidebar — preto puro (ref. Lumin) */
+  --sidebar: #000000;
+  --sidebar-foreground: rgba(255, 255, 255, 0.8);
+  --sidebar-primary: #baf241;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: rgba(186, 242, 65, 0.1);
+  --sidebar-accent-foreground: #baf241;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-ring: #baf241;
+
+  /* Glass */
+  --glass: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.04);
+
+  /* ── Tailwind --color-* overrides ── */
+  --color-background: #f2f2f2 !important;
+  --color-foreground: #000000 !important;
+  --color-card: #ffffff !important;
+  --color-card-foreground: #000000 !important;
+  --color-popover: #ffffff !important;
+  --color-popover-foreground: #000000 !important;
+  --color-primary: #baf241 !important;
+  --color-primary-foreground: #000000 !important;
+  --color-secondary: #000000 !important;
+  --color-secondary-foreground: #f2f2f2 !important;
+  --color-muted: #e8e8e8 !important;
+  --color-muted-foreground: rgba(0, 0, 0, 0.5) !important;
+  --color-accent: #baf241 !important;
+  --color-accent-foreground: #000000 !important;
+  --color-destructive: oklch(0.55 0.22 25) !important;
+  --color-border: rgba(0, 0, 0, 0.06) !important;
+  --color-input: #ffffff !important;
+  --color-ring: #baf241 !important;
+  --color-chart-1: #baf241 !important;
+  --color-chart-2: #000000 !important;
+  --color-chart-3: #2e5902 !important;
+  --color-chart-4: #02261c !important;
+  --color-chart-5: #f2f2f2 !important;
+  --color-sidebar: #000000 !important;
+  --color-sidebar-foreground: rgba(255, 255, 255, 0.8) !important;
+  --color-sidebar-primary: #baf241 !important;
+  --color-sidebar-primary-foreground: #000000 !important;
+  --color-sidebar-accent: rgba(186, 242, 65, 0.1) !important;
+  --color-sidebar-accent-foreground: #baf241 !important;
+  --color-sidebar-border: rgba(255, 255, 255, 0.06) !important;
+  --color-sidebar-ring: #baf241 !important;
+  --color-glass: rgba(255, 255, 255, 0.6) !important;
+  --color-glass-border: rgba(0, 0, 0, 0.04) !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -183,6 +289,53 @@
   body {
     @apply bg-background text-foreground overscroll-none;
   }
+  /* Academy theme: força body/html a usar as cores do design system */
+  body:has(.academy-theme) {
+    background-color: #f2f2f2;
+    color: #000000;
+    --sidebar: #000000;
+    --sidebar-foreground: rgba(255, 255, 255, 0.8);
+    --sidebar-primary: #baf241;
+    --sidebar-primary-foreground: #000000;
+    --sidebar-accent: rgba(186, 242, 65, 0.1);
+    --sidebar-accent-foreground: #baf241;
+    --sidebar-border: rgba(255, 255, 255, 0.06);
+    --sidebar-ring: #baf241;
+    --color-sidebar: #000000;
+    --color-sidebar-foreground: rgba(255, 255, 255, 0.8);
+    --color-sidebar-primary: #baf241;
+    --color-sidebar-primary-foreground: #000000;
+    --color-sidebar-accent: rgba(186, 242, 65, 0.1);
+    --color-sidebar-accent-foreground: #baf241;
+    --color-sidebar-border: rgba(255, 255, 255, 0.06);
+    --color-sidebar-ring: #baf241;
+  }
+}
+
+/* ── Academy scrollbar — fino e sutil ── */
+.academy-theme *::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.academy-theme *::-webkit-scrollbar-track {
+  background: transparent;
+}
+.academy-theme *::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 99px;
+}
+.academy-theme *::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+/* Academy: sidebar preto puro — portal renders outside .academy-theme */
+.academy-theme [data-sidebar="sidebar"],
+body:has(.academy-theme) [data-sidebar="sidebar"] {
+  background-color: #000000 !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+/* Sidebar wrapper (inset variant) also needs override */
+body:has(.academy-theme) .has-data-\[variant\=inset\]\:bg-sidebar {
+  --color-sidebar: #000000 !important;
 }
 
 /* ── View Transition API ── */

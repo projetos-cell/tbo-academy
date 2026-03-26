@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(xargs cat:*)",
+      "mcp__4dff071f-e24b-460d-9c91-1450b1b8ac41__get_project",
+      "Bash(ls \"C:\\\\Users\\\\marco\\\\Desktop\\\\tbo-academy\\\\app\\\\\\(academy\\)\")",
+      "Bash(npx next:*)",
+      "Bash(vercel deploy:*)"
+    ]
+  }
+}

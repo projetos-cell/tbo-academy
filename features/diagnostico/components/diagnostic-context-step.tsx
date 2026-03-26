@@ -1,69 +1,59 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { cn } from "@/lib/utils"
-import {
-  IconBuilding,
-  IconPackage,
-  IconChartBar,
-  IconBuildingSkyscraper,
-} from "@tabler/icons-react"
-import { STAGE_OPTIONS } from "../data/diagnostic-data"
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { IconBuilding, IconPackage, IconChartBar, IconBuildingSkyscraper } from "@tabler/icons-react";
+import { STAGE_OPTIONS } from "../data/diagnostic-data";
 
 const STAGE_ICONS = {
   "building-2": IconBuilding,
   package: IconPackage,
   "chart-bar": IconChartBar,
   building: IconBuildingSkyscraper,
-} as const
+} as const;
 
 interface ContextFormData {
-  stage: string
-  vgv: string
-  freq: string
-  dep: string
-  invest: string
+  stage: string;
+  vgv: string;
+  freq: string;
+  dep: string;
+  invest: string;
 }
 
 interface DiagnosticContextStepProps {
-  data: ContextFormData
-  onChange: (data: ContextFormData) => void
-  onNext: () => void
+  data: ContextFormData;
+  onChange: (data: ContextFormData) => void;
+  onNext: () => void;
 }
 
-export function DiagnosticContextStep({
-  data,
-  onChange,
-  onNext,
-}: DiagnosticContextStepProps) {
-  const [attempted, setAttempted] = useState(false)
+export function DiagnosticContextStep({ data, onChange, onNext }: DiagnosticContextStepProps) {
+  const [attempted, setAttempted] = useState(false);
 
   const update = (key: keyof ContextFormData, value: string) => {
-    onChange({ ...data, [key]: value })
-  }
+    onChange({ ...data, [key]: value });
+  };
 
-  const isComplete =
-    !!data.stage && !!data.vgv && !!data.freq && !!data.dep && !!data.invest
+  const isComplete = !!data.stage && !!data.vgv && !!data.freq && !!data.dep && !!data.invest;
 
   const handleNext = () => {
-    setAttempted(true)
-    if (!isComplete) return
-    onNext()
-  }
+    setAttempted(true);
+    if (!isComplete) return;
+    onNext();
+  };
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-400">
       {/* Provocation block */}
-      <div className="relative overflow-hidden rounded-xl bg-[#0a1f1d] p-7 mb-8">
-        <div className="absolute inset-x-0 top-0 h-[3px] bg-[#b8f724]" />
-        <h2 className="text-xl font-extrabold tracking-tight text-white uppercase leading-tight md:text-2xl">
+      <div className="relative mb-8 overflow-hidden rounded-xl bg-[#000000] p-7">
+        <div className="absolute inset-x-0 top-0 h-[3px] bg-[#BAF241]" />
+        <h2 className="text-xl leading-tight font-extrabold tracking-tight text-white uppercase md:text-2xl">
           Todo incorporador acha que
           <br />
           sabe de marketing.
           <br />
-          <span className="text-[#b8f724]">Quase nenhum sabe.</span>
+          <span className="text-[#BAF241]">Quase nenhum sabe.</span>
         </h2>
-        <p className="mt-3 text-xs text-zinc-400 leading-relaxed max-w-xl">
+        <p className="mt-3 max-w-xl text-xs leading-relaxed text-zinc-400">
           Esse diagnóstico não mede o que você tem. Mede o que você sabe.
           <br />
           Porque o que te custa caro não é a agência. É não saber cobrar dela.
@@ -72,31 +62,31 @@ export function DiagnosticContextStep({
 
       {/* Header */}
       <div className="mb-8">
-        <p className="text-[10px] font-medium tracking-[4px] uppercase text-[#b8f724] mb-2">
-          Etapa 1 de 3
-        </p>
-        <h2 className="text-3xl font-extrabold tracking-tight uppercase leading-none">
+        <p className="mb-2 text-[10px] font-medium tracking-[4px] text-[#BAF241] uppercase">Etapa 1 de 3</p>
+        <h2 className="text-3xl leading-none font-extrabold tracking-tight uppercase">
           Seu
           <br />
           Momento
         </h2>
-        <p className="mt-3 text-xs text-zinc-500 leading-relaxed max-w-xl">
-          Antes de diagnosticar conhecimento, preciso entender onde você está.
-          Não existe resposta errada — existe clareza sobre o ponto de partida.
+        <p className="mt-3 max-w-xl text-xs leading-relaxed text-zinc-500">
+          Antes de diagnosticar conhecimento, preciso entender onde você está. Não existe resposta errada — existe
+          clareza sobre o ponto de partida.
         </p>
       </div>
 
       {/* Stage selector */}
-      <label className="block text-[8px] font-semibold tracking-[1.5px] uppercase text-zinc-400 mb-3">
+      <label className="mb-3 block text-[8px] font-semibold tracking-[1.5px] text-zinc-400 uppercase">
         Qual seu momento atual? <span className="text-red-400">*</span>
       </label>
-      <div className={cn(
-        "grid grid-cols-2 gap-3 mb-1 lg:grid-cols-4 rounded-xl transition-all",
-        attempted && !data.stage ? "ring-2 ring-red-400/50 ring-offset-2" : ""
-      )}>
+      <div
+        className={cn(
+          "mb-1 grid grid-cols-2 gap-3 rounded-xl transition-all lg:grid-cols-4",
+          attempted && !data.stage ? "ring-2 ring-red-400/50 ring-offset-2" : "",
+        )}
+      >
         {STAGE_OPTIONS.map((opt) => {
-          const Icon = STAGE_ICONS[opt.icon]
-          const selected = data.stage === opt.value
+          const Icon = STAGE_ICONS[opt.icon];
+          const selected = data.stage === opt.value;
           return (
             <button
               key={opt.value}
@@ -104,28 +94,26 @@ export function DiagnosticContextStep({
               className={cn(
                 "relative flex flex-col items-center gap-2 rounded-xl border-[1.5px] p-4 text-center transition-all duration-200 hover:-translate-y-0.5",
                 selected
-                  ? "border-[#b8f724] bg-[#b8f724]/5 shadow-[0_4px_16px_rgba(184,247,36,0.1)]"
-                  : "border-zinc-200 bg-white hover:border-[#b8f724]/30 dark:border-zinc-800 dark:bg-zinc-900"
+                  ? "border-[#BAF241] bg-[#BAF241]/5 shadow-[0_4px_16px_rgba(184,247,36,0.1)]"
+                  : "border-zinc-200 bg-white hover:border-[#BAF241]/30 dark:border-zinc-800 dark:bg-zinc-900",
               )}
             >
-              <Icon className={cn("size-6", selected ? "text-[#b8f724]" : "text-zinc-400")} />
+              <Icon className={cn("size-6", selected ? "text-[#BAF241]" : "text-zinc-400")} />
               <span className="text-[11px] font-bold tracking-tight">{opt.title}</span>
-              <span className="text-[8px] text-zinc-500 leading-snug">{opt.desc}</span>
+              <span className="text-[8px] leading-snug text-zinc-500">{opt.desc}</span>
             </button>
-          )
+          );
         })}
       </div>
-      {attempted && !data.stage && (
-        <p className="text-[9px] text-red-400 mb-5 mt-1">Selecione seu momento atual</p>
-      )}
+      {attempted && !data.stage && <p className="mt-1 mb-5 text-[9px] text-red-400">Selecione seu momento atual</p>}
       {(!attempted || !!data.stage) && <div className="mb-6" />}
 
       {/* Context forms */}
-      <div className="grid grid-cols-1 gap-5 mb-6 md:grid-cols-2">
+      <div className="mb-6 grid grid-cols-1 gap-5 md:grid-cols-2">
         {/* Numbers card */}
         <div className="relative overflow-hidden rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="absolute inset-x-0 top-0 h-[3px] bg-[#b8f724]" />
-          <h3 className="flex items-center gap-2 text-[10px] font-bold tracking-[1px] uppercase mb-4">
+          <div className="absolute inset-x-0 top-0 h-[3px] bg-[#BAF241]" />
+          <h3 className="mb-4 flex items-center gap-2 text-[10px] font-bold tracking-[1px] uppercase">
             <span className="text-sm">💰</span> Números
           </h3>
           <div className="space-y-3">
@@ -161,8 +149,8 @@ export function DiagnosticContextStep({
 
         {/* Dependency card */}
         <div className="relative overflow-hidden rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="absolute inset-x-0 top-0 h-[3px] bg-[#b8f724]" />
-          <h3 className="flex items-center gap-2 text-[10px] font-bold tracking-[1px] uppercase mb-4">
+          <div className="absolute inset-x-0 top-0 h-[3px] bg-[#BAF241]" />
+          <h3 className="mb-4 flex items-center gap-2 text-[10px] font-bold tracking-[1px] uppercase">
             <span className="text-sm">🔗</span> Dependência
           </h3>
           <div className="space-y-3">
@@ -193,9 +181,7 @@ export function DiagnosticContextStep({
                   { value: "0", label: "Não sei" },
                 ]}
               />
-              <p className="mt-1 text-[8px] text-zinc-400 italic">
-                Se você não sabe, isso já é um dado.
-              </p>
+              <p className="mt-1 text-[8px] text-zinc-400 italic">Se você não sabe, isso já é um dado.</p>
             </div>
           </div>
         </div>
@@ -203,28 +189,28 @@ export function DiagnosticContextStep({
 
       {/* Validation message */}
       {attempted && !isComplete && (
-        <p className="text-[9px] text-red-400 text-right mb-2">
+        <p className="mb-2 text-right text-[9px] text-red-400">
           Preencha todos os campos obrigatórios antes de continuar
         </p>
       )}
 
       {/* CTA */}
-      <div className="flex justify-end mt-4">
+      <div className="mt-4 flex justify-end">
         <button
           onClick={handleNext}
           disabled={attempted && !isComplete}
           className={cn(
             "inline-flex items-center gap-2 rounded-lg px-7 py-3.5 text-[11px] font-semibold tracking-[1.5px] uppercase transition-all duration-200",
             isComplete
-              ? "bg-[#b8f724] text-[#0a1f1d] hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(184,247,36,0.25)]"
-              : "bg-zinc-200 text-zinc-400 cursor-not-allowed dark:bg-zinc-800 dark:text-zinc-600"
+              ? "bg-[#BAF241] text-[#000000] hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(184,247,36,0.25)]"
+              : "cursor-not-allowed bg-zinc-200 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-600",
           )}
         >
           Começar diagnóstico →
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 function SelectField({
@@ -234,25 +220,23 @@ function SelectField({
   options,
   error,
 }: {
-  label: string
-  value: string
-  onChange: (v: string) => void
-  options: { value: string; label: string }[]
-  error?: boolean
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+  error?: boolean;
 }) {
   return (
     <div>
-      <label className="block text-[8px] font-semibold tracking-[1.5px] uppercase text-zinc-400 mb-1">
+      <label className="mb-1 block text-[8px] font-semibold tracking-[1.5px] text-zinc-400 uppercase">
         {label} <span className="text-red-400">*</span>
       </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          "w-full appearance-none rounded-md border bg-zinc-50 px-3 py-2.5 text-[11px] text-zinc-900 outline-none transition-colors focus:border-[#b8f724] dark:bg-zinc-800 dark:text-zinc-100",
-          error && !value
-            ? "border-red-400 dark:border-red-500"
-            : "border-zinc-200 dark:border-zinc-700"
+          "w-full appearance-none rounded-md border bg-zinc-50 px-3 py-2.5 text-[11px] text-zinc-900 transition-colors outline-none focus:border-[#BAF241] dark:bg-zinc-800 dark:text-zinc-100",
+          error && !value ? "border-red-400 dark:border-red-500" : "border-zinc-200 dark:border-zinc-700",
         )}
       >
         <option value="">Selecione...</option>
@@ -262,9 +246,7 @@ function SelectField({
           </option>
         ))}
       </select>
-      {error && !value && (
-        <p className="text-[8px] text-red-400 mt-0.5">Campo obrigatório</p>
-      )}
+      {error && !value && <p className="mt-0.5 text-[8px] text-red-400">Campo obrigatório</p>}
     </div>
-  )
+  );
 }
