@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import NextTopLoader from "nextjs-toploader";
 import { Providers } from "@/components/providers";
 import { Preloader } from "@/components/layout/preloader";
@@ -34,6 +35,9 @@ export default function RootLayout({
           {children}
         </Providers>
       </body>
+      {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+      )}
     </html>
   );
 }

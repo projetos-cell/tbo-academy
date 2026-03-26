@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/header"
 import { RoleLoader } from "@/features/auth/components/role-loader"
 import { PreviewInitializer } from "@/features/diagnostico/components/preview-initializer"
 import { OnboardingGate } from "@/features/academy/components/onboarding-gate"
+import { CheckoutSuccessTracker } from "@/features/academy/components/checkout-success-tracker"
 import { createClient } from "@/lib/supabase/server"
 import { SUPER_ADMIN_EMAILS, type RoleSlug } from "@/lib/permissions"
 
@@ -58,15 +59,18 @@ export default async function AcademyLayout({
   const defaultOpen = sidebarCookie ? sidebarCookie.value === "true" : true
 
   return (
-    <SidebarProvider defaultOpen={defaultOpen}>
-      {!isGuest && <RoleLoader />}
-      <PreviewInitializer />
-      {!isGuest && <OnboardingGate />}
-      <AcademySidebar />
-      <SidebarInset>
-        <Header />
-        <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
-      </SidebarInset>
-    </SidebarProvider>
+    <div className="academy-theme">
+      <SidebarProvider defaultOpen={defaultOpen}>
+        {!isGuest && <RoleLoader />}
+        <PreviewInitializer />
+        <CheckoutSuccessTracker />
+        {!isGuest && <OnboardingGate />}
+        <AcademySidebar />
+        <SidebarInset>
+          <Header />
+          <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
+        </SidebarInset>
+      </SidebarProvider>
+    </div>
   )
 }

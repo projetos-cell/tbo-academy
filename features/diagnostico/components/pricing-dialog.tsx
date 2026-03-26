@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { trackCheckoutInitiated } from "@/lib/analytics"
 import {
   Dialog,
   DialogContent,
@@ -85,6 +86,7 @@ export function PricingDialog({ open, onOpenChange }: PricingDialogProps) {
     }
 
     setLoadingPlan(planId)
+    trackCheckoutInitiated(planId)
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",

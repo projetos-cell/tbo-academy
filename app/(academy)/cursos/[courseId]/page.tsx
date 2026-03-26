@@ -24,6 +24,7 @@ import { usePreviewSession } from "@/features/academy/hooks/use-preview-session"
 import type { CourseModule } from "@/features/courses/types"
 import { toast } from "sonner"
 import { useCourseProgress } from "@/features/courses/hooks/use-course-progress"
+import { trackCourseStarted, trackModuleCompleted } from "@/lib/analytics"
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
   "Introdução": "from-black via-zinc-900 to-zinc-800",
@@ -81,6 +82,7 @@ export default function AcademyCourseDetailPage() {
     if (mod.videoUrl) {
       setSelectedModule(mod)
       markModuleInProgress(mod.id)
+      if (course) trackCourseStarted(courseId, course.title)
     } else {
       toast.info("Conteúdo em breve", {
         description: `"${mod.title}" será disponibilizado na próxima fase da plataforma.`,
@@ -90,6 +92,7 @@ export default function AcademyCourseDetailPage() {
 
   const handleMarkComplete = (mod: CourseModule) => {
     markModuleComplete(mod.id)
+    trackModuleCompleted(mod.id, mod.title, courseId)
     toast.success("Módulo concluído!", {
       description: `"${mod.title}" marcado como concluído.`,
     })

@@ -10,8 +10,9 @@ import {
 import { DiagnosticResultsDashboard } from "@/features/diagnostico/components/diagnostic-results-dashboard"
 import { ProcessingOverlay } from "@/features/diagnostico/components/processing-overlay"
 import { PricingDialog } from "@/features/diagnostico/components/pricing-dialog"
-import { ETAPAS } from "@/features/diagnostico/data/diagnostic-data"
+import { ETAPAS, getLevel } from "@/features/diagnostico/data/diagnostic-data"
 import { useDiagnosticPersistence } from "@/features/diagnostico/hooks/use-diagnostic-persistence"
+import { trackDiagnosticCompleted } from "@/lib/analytics"
 import { toast } from "sonner"
 
 const STEP_LABELS = ["Contexto", "Diagnóstico", "Resultado"]
@@ -73,8 +74,19 @@ export default function DiagnosticoPage() {
   const handleProcessingComplete = useCallback(() => {
     setProcessing(false)
     clearDraft()
+    // Compute overall score to send with the GA event
+    const totalScore = ETAPAS.reduce((acc, etapa, ei) => {
+      return acc + etapa.qs.reduce((s, q, qi) => {
+        const val = answers[`${ei}_${qi}`]
+        return s + (val ? val * q.weight : 0)
+      }, 0)
+    }, 0)
+    const totalMax = ETAPAS.reduce((a, e) => a + e.max, 0)
+    const pct = totalScore / totalMax
+    const level = getLevel(pct)
+    trackDiagnosticCompleted(Math.round(pct * 100), level.cls)
     goStep(2)
-  }, [goStep, clearDraft])
+  }, [goStep, clearDraft, answers])
 
   return (
     <div className="min-h-screen">
@@ -86,7 +98,7 @@ export default function DiagnosticoPage() {
               className={cn(
                 "flex size-[22px] items-center justify-center rounded-full border-2 text-[9px] font-bold transition-all",
                 i === step
-                  ? "bg-[#b8f724] border-[#b8f724] text-[#0a1f1d]"
+                  ? "bg-[#BAF241] border-[#BAF241] text-[#000000]"
                   : i < step
                     ? "bg-emerald-500 border-emerald-500 text-white"
                     : "border-zinc-300 text-zinc-400"
