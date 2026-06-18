@@ -12,10 +12,10 @@ import {
   IconEye,
   IconEyeOff,
   IconDots,
+  IconArrowRight,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import {
   Dialog,
@@ -42,6 +42,7 @@ import {
   useDeleteCourse,
 } from "@/features/admin/hooks/use-admin-courses";
 import type { AdminCourse } from "@/features/admin/types";
+import { cn } from "@/lib/utils";
 
 const STATUS_LABELS: Record<AdminCourse["status"], string> = {
   draft: "Rascunho",
@@ -49,10 +50,11 @@ const STATUS_LABELS: Record<AdminCourse["status"], string> = {
   archived: "Arquivado",
 };
 
-const STATUS_VARIANTS: Record<AdminCourse["status"], "secondary" | "default" | "destructive"> = {
-  draft: "secondary",
-  published: "default",
-  archived: "destructive",
+/** Status pills no padrão DS: volt para publicado, neutro/discreto para os demais. */
+const STATUS_PILL: Record<AdminCourse["status"], string> = {
+  published: "bg-volt text-ink",
+  draft: "bg-paper-off text-forest-700 border border-black/[0.06]",
+  archived: "bg-paper-off text-[var(--tbo-gray-500)] border border-black/[0.06]",
 };
 
 const LEVEL_LABELS: Record<string, string> = {
@@ -63,19 +65,20 @@ const LEVEL_LABELS: Record<string, string> = {
 
 function CourseCardSkeleton() {
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="pb-2">
+    <Card className="overflow-hidden rounded-2xl border-black/[0.06] shadow-sm">
+      <Skeleton className="h-36 rounded-none" />
+      <CardHeader className="pt-3 pb-2">
         <div className="flex items-start justify-between gap-2">
           <Skeleton className="h-5 w-3/4" />
-          <Skeleton className="h-5 w-16 rounded-full" />
+          <Skeleton className="size-7 rounded-full" />
         </div>
       </CardHeader>
       <CardContent className="pb-2">
-        <Skeleton className="mb-2 h-4 w-1/2" />
+        <Skeleton className="mb-2 h-4 w-1/2 rounded-full" />
         <Skeleton className="h-3 w-2/3" />
       </CardContent>
       <CardFooter>
-        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-9 w-full rounded-full" />
       </CardFooter>
     </Card>
   );
@@ -137,7 +140,8 @@ function NewCourseDialog({ open, onClose }: NewCourseDialogProps) {
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Novo Curso</DialogTitle>
+          <span className="text-forest-500 text-xs font-bold tracking-[0.14em] uppercase">Novo curso</span>
+          <DialogTitle className="font-display tracking-tight">Criar curso</DialogTitle>
           <DialogDescription>Preencha os dados básicos. Você pode editar tudo depois.</DialogDescription>
         </DialogHeader>
 
@@ -184,10 +188,14 @@ function NewCourseDialog({ open, onClose }: NewCourseDialogProps) {
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" className="rounded-full" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={!title.trim() || createCourse.isPending}>
+            <Button
+              type="submit"
+              disabled={!title.trim() || createCourse.isPending}
+              className="bg-forest-900 hover:bg-ink rounded-full text-white"
+            >
               Criar Curso
             </Button>
           </DialogFooter>
@@ -240,32 +248,38 @@ export function CourseList() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Cursos</h1>
-          <p className="text-muted-foreground mt-0.5 text-sm">
+          <span className="text-forest-500 text-xs font-bold tracking-[0.14em] uppercase">Conteúdo</span>
+          <h1 className="font-display mt-1 text-[28px] font-bold tracking-tight">Cursos</h1>
+          <p className="mt-1 text-sm text-[var(--tbo-gray-500)]">
             {courses?.length ?? 0} curso{(courses?.length ?? 0) !== 1 ? "s" : ""} no total
           </p>
         </div>
-        <Button onClick={() => setNewDialogOpen(true)}>
-          <IconPlus className="mr-1.5 size-4" />
-          Novo Curso
-        </Button>
+        <button
+          onClick={() => setNewDialogOpen(true)}
+          className="bg-forest-900 hover:bg-ink flex items-center gap-2 rounded-full py-2 pr-2 pl-5 text-sm font-bold text-white transition-all hover:-translate-y-px"
+        >
+          Novo curso
+          <span className="bg-volt text-ink grid size-7 place-items-center rounded-full">
+            <IconPlus className="size-4" />
+          </span>
+        </button>
       </div>
 
       {/* Filters */}
       <div className="flex gap-3">
         <div className="relative max-w-sm flex-1">
-          <IconSearch className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
+          <IconSearch className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-[var(--tbo-gray-500)]" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Pesquisar cursos..."
-            className="pl-9"
+            className="rounded-full pl-10"
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-36">
+          <SelectTrigger className="w-36 rounded-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -285,33 +299,60 @@ export function CourseList() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed p-12 text-center">
-          <IconBook2 className="text-muted-foreground/40 size-10" />
+        <div className="bg-card flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-black/[0.12] p-12 text-center">
+          <span className="bg-forest-900 text-volt grid size-12 place-items-center rounded-full">
+            <IconBook2 className="size-6" strokeWidth={1.5} />
+          </span>
           <div>
-            <p className="text-sm font-medium">Nenhum curso encontrado</p>
-            <p className="text-muted-foreground mt-1 text-xs">
+            <p className="font-display text-base font-bold tracking-tight">Nenhum curso encontrado</p>
+            <p className="mt-1 text-xs text-[var(--tbo-gray-500)]">
               {search ? "Tente outros termos de busca" : "Crie seu primeiro curso"}
             </p>
           </div>
           {!search && (
-            <Button size="sm" onClick={() => setNewDialogOpen(true)}>
-              <IconPlus className="mr-1 size-3.5" />
-              Novo Curso
-            </Button>
+            <button
+              onClick={() => setNewDialogOpen(true)}
+              className="bg-forest-900 hover:bg-ink mt-1 flex items-center gap-2 rounded-full py-1.5 pr-1.5 pl-4 text-xs font-bold text-white transition-all hover:-translate-y-px"
+            >
+              Novo curso
+              <span className="bg-volt text-ink grid size-5 place-items-center rounded-full">
+                <IconPlus className="size-3.5" />
+              </span>
+            </button>
           )}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((course) => (
-            <Card key={course.id} className="group overflow-hidden transition-shadow hover:shadow-md">
+            <Card
+              key={course.id}
+              className="group overflow-hidden rounded-2xl border-black/[0.06] py-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(11,11,11,0.10)]"
+            >
               {course.thumbnail_url ? (
                 <div
-                  className="bg-muted h-36 bg-cover bg-center"
+                  className="relative h-36 bg-cover bg-center"
                   style={{ backgroundImage: `url(${course.thumbnail_url})` }}
-                />
+                >
+                  <span
+                    className={cn(
+                      "absolute top-3 left-3 rounded-full px-2.5 py-1 text-[11px] font-semibold backdrop-blur-sm",
+                      STATUS_PILL[course.status],
+                    )}
+                  >
+                    {STATUS_LABELS[course.status]}
+                  </span>
+                </div>
               ) : (
-                <div className="bg-muted flex h-36 items-center justify-center">
-                  <IconBook2 className="text-muted-foreground/30 size-10" />
+                <div className="img-dark relative flex h-36 items-center justify-center">
+                  <IconBook2 className="text-volt/90 size-10" strokeWidth={1.5} />
+                  <span
+                    className={cn(
+                      "absolute top-3 left-3 rounded-full px-2.5 py-1 text-[11px] font-semibold",
+                      STATUS_PILL[course.status],
+                    )}
+                  >
+                    {STATUS_LABELS[course.status]}
+                  </span>
                 </div>
               )}
 
@@ -319,7 +360,7 @@ export function CourseList() {
                 <div className="flex items-start justify-between gap-2">
                   <Link
                     href={`/admin/cursos/${course.id}`}
-                    className="line-clamp-2 text-sm leading-snug font-semibold hover:underline"
+                    className="font-display line-clamp-2 text-[15px] leading-snug font-bold tracking-tight hover:underline"
                   >
                     {course.title}
                   </Link>
@@ -328,7 +369,7 @@ export function CourseList() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="size-7 shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                        className="size-7 shrink-0 rounded-full opacity-0 transition-opacity group-hover:opacity-100"
                       >
                         <IconDots className="size-4" />
                       </Button>
@@ -365,29 +406,29 @@ export function CourseList() {
 
               <CardContent className="pb-3">
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <Badge variant={STATUS_VARIANTS[course.status]} className="px-1.5 py-0 text-[10px]">
-                    {STATUS_LABELS[course.status]}
-                  </Badge>
                   {course.level && (
-                    <Badge variant="outline" className="px-1.5 py-0 text-[10px]">
+                    <span className="text-forest-700 bg-paper-off rounded-full border border-black/[0.06] px-2.5 py-0.5 text-[11px] font-semibold">
                       {LEVEL_LABELS[course.level] ?? course.level}
-                    </Badge>
+                    </span>
                   )}
-                  {course.category && <span className="text-muted-foreground text-[11px]">{course.category}</span>}
+                  {course.category && <span className="text-[11px] text-[var(--tbo-gray-500)]">{course.category}</span>}
                 </div>
-                <p className="text-muted-foreground mt-2 text-xs">
+                <p className="mt-2 text-xs text-[var(--tbo-gray-500)]">
                   {course.module_count ?? 0} módulo{(course.module_count ?? 0) !== 1 ? "s" : ""} ·{" "}
                   {course.lesson_count ?? 0} aula{(course.lesson_count ?? 0) !== 1 ? "s" : ""}
                 </p>
               </CardContent>
 
-              <CardFooter className="pt-0">
-                <Button asChild size="sm" variant="outline" className="w-full text-xs">
-                  <Link href={`/admin/cursos/${course.id}`}>
-                    <IconEdit className="mr-1.5 size-3" />
-                    Editar Curso
-                  </Link>
-                </Button>
+              <CardFooter className="pt-0 pb-4">
+                <Link
+                  href={`/admin/cursos/${course.id}`}
+                  className="text-ink flex w-full items-center justify-between rounded-full border border-black/10 py-2 pr-2 pl-4 text-xs font-bold transition-all hover:-translate-y-px hover:bg-black/[0.04]"
+                >
+                  Editar curso
+                  <span className="bg-forest-900 text-volt group-hover:bg-volt group-hover:text-ink grid size-6 place-items-center rounded-full transition-colors">
+                    <IconArrowRight className="size-3.5" />
+                  </span>
+                </Link>
               </CardFooter>
             </Card>
           ))}
@@ -400,17 +441,17 @@ export function CourseList() {
       <Dialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Arquivar curso?</DialogTitle>
+            <DialogTitle className="font-display tracking-tight">Arquivar curso?</DialogTitle>
             <DialogDescription>
               &ldquo;{deleteTarget?.title}&rdquo; será arquivado e ficará invisível para os alunos. Você pode
               restaurá-lo depois.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteTarget(null)}>
+            <Button variant="outline" className="rounded-full" onClick={() => setDeleteTarget(null)}>
               Cancelar
             </Button>
-            <Button variant="destructive" onClick={handleDelete}>
+            <Button variant="destructive" className="rounded-full" onClick={handleDelete}>
               Arquivar
             </Button>
           </DialogFooter>

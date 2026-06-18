@@ -1,37 +1,18 @@
-"use client"
+"use client";
 
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { IconVideo } from "@tabler/icons-react"
-
-const CATEGORY_GRADIENTS: Record<string, string> = {
-  Design: "from-[#BAF241] to-emerald-600",
-  Branding: "from-amber-500 to-orange-600",
-  "Marketing Digital": "from-blue-500 to-cyan-600",
-  Copywriting: "from-emerald-500 to-teal-600",
-  "Motion Graphics": "from-pink-500 to-rose-600",
-  "UI/UX": "from-teal-500 to-cyan-600",
-  "Social Media": "from-pink-500 to-rose-600",
-  Gestao: "from-slate-500 to-gray-600",
-}
+import { IconPlayerPlay, IconVideo } from "@tabler/icons-react";
 
 interface CourseVideoPlayerProps {
-  category: string
-  currentModuleTitle: string
-  videoUrl?: string
+  category: string;
+  currentModuleTitle: string;
+  videoUrl?: string;
 }
 
-export function CourseVideoPlayer({
-  category,
-  currentModuleTitle,
-  videoUrl,
-}: CourseVideoPlayerProps) {
-  const gradient = CATEGORY_GRADIENTS[category] ?? "from-gray-500 to-gray-600"
-
+export function CourseVideoPlayer({ category, currentModuleTitle, videoUrl }: CourseVideoPlayerProps) {
   if (videoUrl) {
     return (
-      <Card className="overflow-hidden rounded-2xl border-0 shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
-        <div className="relative aspect-video w-full">
+      <div className="bg-card overflow-hidden rounded-2xl border border-black/[0.06] shadow-sm">
+        <div className="bg-forest-950 relative aspect-video w-full">
           <iframe
             src={videoUrl}
             title={currentModuleTitle}
@@ -40,36 +21,41 @@ export function CourseVideoPlayer({
             className="absolute inset-0 h-full w-full"
           />
         </div>
-        <div className="bg-black px-5 py-3">
-          <p className="text-sm font-semibold text-white truncate">{currentModuleTitle}</p>
+        <div className="bg-forest-900 flex items-center gap-3 px-5 py-3.5">
+          <span className="bg-volt text-ink grid size-7 flex-none place-items-center rounded-full">
+            <IconPlayerPlay className="size-4 fill-current" />
+          </span>
+          <div className="min-w-0">
+            <span className="text-volt block text-[10px] font-bold tracking-[0.14em] uppercase">{category}</span>
+            <p className="truncate text-sm font-semibold text-white">{currentModuleTitle}</p>
+          </div>
         </div>
-      </Card>
-    )
+      </div>
+    );
   }
 
   return (
-    <Card className="overflow-hidden rounded-2xl border-0">
-      <div
-        className={`relative flex aspect-video items-center justify-center bg-gradient-to-br ${gradient}`}
-      >
-        <div className="absolute inset-0 bg-black/20" />
+    <div className="bg-card overflow-hidden rounded-2xl border border-black/[0.06] shadow-sm">
+      <div className="img-dark relative flex aspect-video items-center justify-center">
+        <div
+          className="pointer-events-none absolute -top-16 -right-16 size-72 rounded-full blur-2xl"
+          style={{ background: "radial-gradient(circle, rgba(186,242,65,.16), transparent 62%)" }}
+        />
 
-        <div className="relative z-10 flex flex-col items-center gap-3 text-center px-8">
-          <IconVideo className="size-12 text-white/70" />
-          <p className="text-white font-semibold text-lg">Conteúdo em breve</p>
-          <p className="text-white/70 text-sm max-w-xs">
-            Os vídeos serão integrados na próxima fase da plataforma.
-          </p>
-          <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/20">
-            Em desenvolvimento
-          </Badge>
+        <div className="relative z-10 flex flex-col items-center gap-3 px-8 text-center">
+          <span className="grid size-14 place-items-center rounded-full border border-white/15 bg-white/[0.08] backdrop-blur-sm">
+            <IconVideo className="text-volt size-7" strokeWidth={1.5} />
+          </span>
+          <span className="text-volt text-xs font-bold tracking-[0.14em] uppercase">Em desenvolvimento</span>
+          <p className="font-display text-lg font-bold tracking-tight text-white">Conteúdo em breve</p>
+          <p className="max-w-xs text-sm text-white/70">Os vídeos serão integrados na próxima fase da plataforma.</p>
         </div>
 
-        <div className="absolute bottom-4 left-4 z-10">
-          <p className="text-sm text-white/80">Módulo atual</p>
-          <p className="text-lg font-semibold text-white">{currentModuleTitle}</p>
+        <div className="absolute bottom-4 left-5 z-10">
+          <p className="text-volt text-[10px] font-bold tracking-[0.14em] uppercase">Módulo atual</p>
+          <p className="text-base font-semibold text-white">{currentModuleTitle}</p>
         </div>
       </div>
-    </Card>
-  )
+    </div>
+  );
 }

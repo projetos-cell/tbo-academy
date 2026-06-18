@@ -1,57 +1,46 @@
-"use client"
+"use client";
 
-import { useMemo, useCallback } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/components/shared/page-header"
-import { EmptyState } from "@/components/shared"
-import { MOCK_COURSES } from "@/features/courses/data/mock-courses"
-import {
-  IconCertificate,
-  IconDownload,
-  IconShare,
-  IconCalendar,
-  IconLoader2,
-} from "@tabler/icons-react"
-import { useState } from "react"
+import { useMemo, useCallback } from "react";
+import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared";
+import { MOCK_COURSES } from "@/features/courses/data/mock-courses";
+import { IconCertificate, IconDownload, IconShare, IconCalendar, IconLoader2 } from "@tabler/icons-react";
+import { useState } from "react";
 
 function useCertificateDownload() {
-  const [downloading, setDownloading] = useState<string | null>(null)
+  const [downloading, setDownloading] = useState<string | null>(null);
 
   const download = useCallback(async (courseId: string, courseTitle: string, instructor: string) => {
-    setDownloading(courseId)
+    setDownloading(courseId);
     try {
-      const params = new URLSearchParams({ courseId, courseTitle, instructor })
-      const res = await fetch(`/api/academy/certificate?${params.toString()}`)
-      if (!res.ok) throw new Error("Falha ao gerar certificado")
-      const blob = await res.blob()
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `certificado-${courseId}.pdf`
-      a.click()
-      URL.revokeObjectURL(url)
+      const params = new URLSearchParams({ courseId, courseTitle, instructor });
+      const res = await fetch(`/api/academy/certificate?${params.toString()}`);
+      if (!res.ok) throw new Error("Falha ao gerar certificado");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `certificado-${courseId}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
     } catch {
-      alert("Erro ao baixar o certificado. Tente novamente.")
+      alert("Erro ao baixar o certificado. Tente novamente.");
     } finally {
-      setDownloading(null)
+      setDownloading(null);
     }
-  }, [])
+  }, []);
 
-  return { download, downloading }
+  return { download, downloading };
 }
 
 export default function CertificadosPage() {
-  const completedCourses = useMemo(
-    () => MOCK_COURSES.filter((c) => c.status === "concluido"),
-    []
-  )
-  const { download, downloading } = useCertificateDownload()
+  const completedCourses = useMemo(() => MOCK_COURSES.filter((c) => c.status === "concluido"), []);
+  const { download, downloading } = useCertificateDownload();
 
   return (
     <div className="space-y-6">
       <PageHeader
+        eyebrow="Conquistas"
         title="Certificados"
         description="Certificados conquistados ao concluir cursos"
       />
@@ -59,52 +48,54 @@ export default function CertificadosPage() {
       {completedCourses.length > 0 ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {completedCourses.map((course) => (
-            <Card key={course.id} className="overflow-hidden group py-0 gap-0">
-              {/* Certificate visual — Lumin */}
-              <div className="relative bg-black p-6 flex flex-col items-center text-center overflow-hidden">
-                <div className="absolute -right-6 -top-6 size-24 rounded-full bg-[#BAF241]/10" />
-                <div className="relative flex size-16 items-center justify-center rounded-2xl bg-[#BAF241] text-black text-2xl mb-3">
+            <div
+              key={course.id}
+              className="group bg-card relative flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(11,11,11,0.10)]"
+            >
+              {/* Certificate visual — forest treatment do DS */}
+              <div className="from-forest-800 to-forest-950 relative flex flex-col items-center overflow-hidden bg-gradient-to-br p-6 text-center">
+                <div
+                  className="pointer-events-none absolute -top-10 -right-10 size-40 rounded-full blur-2xl"
+                  style={{ background: "radial-gradient(circle, rgba(186,242,65,.16), transparent 62%)" }}
+                />
+                <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
+                  {course.category}
+                </span>
+                <div className="bg-volt text-ink relative mt-4 mb-3 flex size-16 items-center justify-center rounded-2xl">
                   <IconCertificate className="size-8" />
                 </div>
-                <h3 className="font-semibold text-sm text-white">{course.title}</h3>
-                <p className="text-xs text-white/50 mt-1">
-                  {course.instructor}
-                </p>
+                <h3 className="font-display text-[15px] leading-tight font-bold tracking-tight text-white">
+                  {course.title}
+                </h3>
+                <p className="mt-1 text-xs text-white/50">{course.instructor}</p>
               </div>
 
-              <CardContent className="p-4 space-y-3">
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <IconCalendar className="size-3" />
-                    Concluído em Mar 2026
-                  </span>
-                  <Badge variant="secondary" className="text-[10px]">
-                    {course.category}
-                  </Badge>
-                </div>
+              <div className="flex flex-1 flex-col p-4">
+                <span className="flex items-center gap-1.5 text-xs text-[var(--tbo-gray-500)]">
+                  <IconCalendar className="text-forest-500 size-3.5" />
+                  Concluído em Mar 2026
+                </span>
 
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 gap-1"
+                <div className="mt-4 flex gap-2">
+                  <button
                     disabled={downloading === course.id}
                     onClick={() => download(course.id, course.title, course.instructor)}
+                    className="bg-forest-900 hover:bg-ink flex flex-1 items-center justify-center gap-1.5 rounded-full py-2.5 text-[13px] font-bold text-white transition-all hover:-translate-y-px disabled:pointer-events-none disabled:opacity-60"
                   >
                     {downloading === course.id ? (
-                      <IconLoader2 className="size-3 animate-spin" />
+                      <IconLoader2 className="size-3.5 animate-spin" />
                     ) : (
-                      <IconDownload className="size-3" />
+                      <IconDownload className="size-3.5" />
                     )}
                     Download
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1 gap-1">
-                    <IconShare className="size-3" />
+                  </button>
+                  <button className="text-ink flex flex-1 items-center justify-center gap-1.5 rounded-full border border-black/10 py-2.5 text-[13px] font-bold transition-all hover:-translate-y-px hover:bg-black/[0.04]">
+                    <IconShare className="size-3.5" />
                     Compartilhar
-                  </Button>
+                  </button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       ) : (
@@ -115,5 +106,5 @@ export default function CertificadosPage() {
         />
       )}
     </div>
-  )
+  );
 }

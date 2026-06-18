@@ -90,13 +90,13 @@ export function ModulePanel({ module, courseId, dragHandleProps }: ModulePanelPr
   }
 
   return (
-    <div className="bg-card rounded-lg border">
+    <div className="bg-card rounded-2xl border border-black/[0.06] shadow-sm">
       {/* Module header */}
       <div className="group flex items-center gap-2 p-3">
         {/* Drag handle */}
         <div
           {...dragHandleProps}
-          className="text-muted-foreground hover:text-foreground cursor-grab touch-none transition-colors"
+          className="hover:text-ink cursor-grab touch-none text-[var(--tbo-gray-500)]/60 transition-colors"
         >
           <IconGripVertical className="size-4" />
         </div>
@@ -105,7 +105,7 @@ export function ModulePanel({ module, courseId, dragHandleProps }: ModulePanelPr
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="text-muted-foreground hover:text-foreground transition-colors"
+          className="hover:text-ink text-[var(--tbo-gray-500)] transition-colors"
         >
           {expanded ? <IconChevronDown className="size-4" /> : <IconChevronRight className="size-4" />}
         </button>
@@ -118,7 +118,7 @@ export function ModulePanel({ module, courseId, dragHandleProps }: ModulePanelPr
             onChange={(e) => setTitleValue(e.target.value)}
             onBlur={handleTitleBlur}
             onKeyDown={handleTitleKeyDown}
-            className="h-7 flex-1 text-sm font-medium"
+            className="font-display h-7 flex-1 text-sm font-bold tracking-tight"
             autoFocus
           />
         ) : (
@@ -128,13 +128,13 @@ export function ModulePanel({ module, courseId, dragHandleProps }: ModulePanelPr
               setEditingTitle(true);
               setTimeout(() => titleRef.current?.focus(), 0);
             }}
-            className="hover:text-muted-foreground flex-1 truncate text-left text-sm font-medium transition-colors"
+            className="font-display hover:text-forest-700 flex-1 truncate text-left text-sm font-bold tracking-tight transition-colors"
           >
             {module.title}
           </button>
         )}
 
-        <span className="text-muted-foreground shrink-0 text-xs">
+        <span className="shrink-0 text-xs text-[var(--tbo-gray-500)]">
           {lessons.length} aula{lessons.length !== 1 ? "s" : ""}
         </span>
 
@@ -164,14 +164,14 @@ export function ModulePanel({ module, courseId, dragHandleProps }: ModulePanelPr
 
       {/* Lessons list */}
       {expanded && (
-        <div className="border-t">
+        <div className="border-t border-black/[0.06]">
           {lessons.length === 0 ? (
-            <div className="text-muted-foreground px-4 py-4 text-center text-xs">
+            <div className="px-4 py-4 text-center text-xs text-[var(--tbo-gray-500)]">
               Nenhuma aula ainda.{" "}
               <button
                 type="button"
                 onClick={openNewLesson}
-                className="hover:text-foreground underline underline-offset-2"
+                className="text-forest-700 hover:text-ink font-semibold underline underline-offset-2 transition-colors"
               >
                 Adicionar aula
               </button>
@@ -191,11 +191,11 @@ export function ModulePanel({ module, courseId, dragHandleProps }: ModulePanelPr
             />
           )}
 
-          <div className="border-t p-2">
+          <div className="border-t border-black/[0.06] p-2">
             <Button
               size="sm"
               variant="ghost"
-              className="text-muted-foreground hover:text-foreground w-full gap-1.5 text-xs"
+              className="hover:text-ink w-full gap-1.5 text-xs text-[var(--tbo-gray-500)]"
               onClick={openNewLesson}
             >
               <IconPlus className="size-3.5" />
@@ -221,7 +221,7 @@ export function ModulePanel({ module, courseId, dragHandleProps }: ModulePanelPr
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Excluir módulo?</DialogTitle>
+            <DialogTitle className="font-display tracking-tight">Excluir módulo?</DialogTitle>
             <DialogDescription>
               &ldquo;{module.title}&rdquo; e todas as suas aulas serão excluídos permanentemente. Esta ação não pode ser
               desfeita.

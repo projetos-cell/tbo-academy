@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { IconBook, IconUsers, IconBookmark, IconMessageCircle, IconCheckbox, IconTrophy } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatsCard } from "@/features/admin/components/stats-card";
 import { useAdminAnalytics } from "@/features/admin/hooks/use-admin-analytics";
@@ -37,10 +36,10 @@ function ChartTooltip({
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-card rounded-lg border px-3 py-2 text-sm shadow-sm">
-      <p className="text-muted-foreground mb-1">{label}</p>
+    <div className="bg-card rounded-xl border border-black/[0.06] px-3 py-2 text-sm shadow-sm">
+      <p className="mb-1 text-[var(--tbo-gray-500)]">{label}</p>
       {payload.map((p, i) => (
-        <p key={i} className="font-semibold">
+        <p key={i} className="font-display font-semibold tracking-tight">
           {p.value} {p.name}
         </p>
       ))}
@@ -68,15 +67,15 @@ function EnrollmentChart({ data, period, loading }: { data: DaySeries[]; period:
           axisLine={false}
           allowDecimals={false}
         />
-        <Tooltip content={<ChartTooltip />} />
+        <Tooltip content={<ChartTooltip />} cursor={{ stroke: "var(--tbo-forest-200)" }} />
         <Line
           type="monotone"
           dataKey="value"
           name="matrículas"
-          stroke="hsl(var(--primary))"
+          stroke="var(--tbo-forest-900)"
           strokeWidth={2}
           dot={false}
-          activeDot={{ r: 4 }}
+          activeDot={{ r: 4, fill: "var(--tbo-volt)", stroke: "var(--tbo-forest-900)", strokeWidth: 2 }}
         />
       </LineChart>
     </ResponsiveContainer>
@@ -103,8 +102,8 @@ function CompletionChart({ data, period, loading }: { data: DaySeries[]; period:
           axisLine={false}
           allowDecimals={false}
         />
-        <Tooltip content={<ChartTooltip />} />
-        <Bar dataKey="value" name="aulas concluídas" fill="hsl(var(--primary))" radius={[3, 3, 0, 0]} />
+        <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--tbo-forest-50)" }} />
+        <Bar dataKey="value" name="aulas concluídas" fill="var(--tbo-volt)" radius={[3, 3, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -121,17 +120,17 @@ export function AnalyticsOverview({ mini = false }: { mini?: boolean }) {
     <div className="space-y-6">
       {/* Period selector */}
       {!mini && (
-        <div className="bg-muted/40 flex w-fit items-center gap-1 rounded-lg p-1">
+        <div className="bg-paper-off flex w-fit items-center gap-1 rounded-full border border-black/[0.06] p-1">
           {PERIODS.map((p) => (
-            <Button
+            <button
               key={p.value}
-              variant={period === p.value ? "default" : "ghost"}
-              size="sm"
-              className="h-7 px-3 text-xs"
               onClick={() => setPeriod(p.value as 7 | 30 | 90)}
+              className={`h-7 rounded-full px-4 text-xs font-semibold transition-all ${
+                period === p.value ? "bg-forest-900 text-white" : "hover:text-ink text-[var(--tbo-gray-500)]"
+              }`}
             >
               {p.label}
-            </Button>
+            </button>
           ))}
         </div>
       )}
@@ -186,19 +185,19 @@ export function AnalyticsOverview({ mini = false }: { mini?: boolean }) {
       {!mini && (
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Enrollment line chart */}
-          <div className="bg-card space-y-3 rounded-xl border p-5">
+          <div className="bg-card space-y-3 rounded-2xl border border-black/[0.06] p-5 shadow-sm">
             <div>
-              <h3 className="text-sm font-semibold">Novas Matrículas</h3>
-              <p className="text-muted-foreground text-xs">Últimos {period} dias</p>
+              <h3 className="font-display text-base font-bold tracking-tight">Novas Matrículas</h3>
+              <p className="text-xs text-[var(--tbo-gray-500)]">Últimos {period} dias</p>
             </div>
             <EnrollmentChart data={data?.enrollmentSeries ?? []} period={period} loading={isLoading} />
           </div>
 
           {/* Completion bar chart */}
-          <div className="bg-card space-y-3 rounded-xl border p-5">
+          <div className="bg-card space-y-3 rounded-2xl border border-black/[0.06] p-5 shadow-sm">
             <div>
-              <h3 className="text-sm font-semibold">Aulas Concluídas</h3>
-              <p className="text-muted-foreground text-xs">Últimos {period} dias</p>
+              <h3 className="font-display text-base font-bold tracking-tight">Aulas Concluídas</h3>
+              <p className="text-xs text-[var(--tbo-gray-500)]">Últimos {period} dias</p>
             </div>
             <CompletionChart data={data?.completionSeries ?? []} period={period} loading={isLoading} />
           </div>
@@ -207,10 +206,10 @@ export function AnalyticsOverview({ mini = false }: { mini?: boolean }) {
 
       {/* Top courses */}
       {!mini && (data?.topCourses?.length ?? 0) > 0 && (
-        <div className="bg-card space-y-4 rounded-xl border p-5">
+        <div className="bg-card space-y-4 rounded-2xl border border-black/[0.06] p-5 shadow-sm">
           <div>
-            <h3 className="text-sm font-semibold">Cursos Mais Acessados</h3>
-            <p className="text-muted-foreground text-xs">Últimos {period} dias — por número de matrículas</p>
+            <h3 className="font-display text-base font-bold tracking-tight">Cursos Mais Acessados</h3>
+            <p className="text-xs text-[var(--tbo-gray-500)]">Últimos {period} dias — por número de matrículas</p>
           </div>
           <div className="space-y-3">
             {data!.topCourses.map((course, i) => {
@@ -218,17 +217,17 @@ export function AnalyticsOverview({ mini = false }: { mini?: boolean }) {
               const pct = max > 0 ? (course.count / max) * 100 : 0;
               return (
                 <div key={course.id} className="flex items-center gap-3">
-                  <span className="text-muted-foreground w-4 text-right text-xs font-semibold">{i + 1}</span>
+                  <span className="font-display text-forest-500 w-4 text-right text-xs font-bold">{i + 1}</span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{course.title}</p>
                     <div className="mt-1 flex items-center gap-2">
                       <div className="bg-muted h-1.5 flex-1 overflow-hidden rounded-full">
                         <div
-                          className="bg-primary h-full rounded-full transition-all duration-500"
+                          className="bg-volt h-full rounded-full transition-all duration-500"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <span className="text-muted-foreground w-12 text-right text-xs tabular-nums">
+                      <span className="w-12 text-right text-xs text-[var(--tbo-gray-500)] tabular-nums">
                         {course.count} matr.
                       </span>
                     </div>

@@ -1,9 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/shared/page-header";
@@ -18,8 +15,21 @@ import {
   IconBell,
   IconPlayerPlay,
   IconCalendarEvent,
+  IconBulb,
+  IconCube,
+  IconMovie,
+  IconPalette,
+  IconSparkles,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
+
+const CATEGORY_ICONS: Record<string, React.ElementType> = {
+  "Direção Criativa": IconSparkles,
+  Archviz: IconCube,
+  Branding: IconBulb,
+  "Direção de Arte": IconPalette,
+  Audiovisual: IconMovie,
+};
 
 const MOCK_CLASSES: LiveClass[] = [
   {
@@ -125,58 +135,68 @@ export default function AulasAoVivoPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Aulas ao Vivo" description="Participe de aulas em tempo real com especialistas do mercado" />
+      <PageHeader
+        eyebrow="Aulas ao vivo"
+        title="Aulas ao Vivo"
+        description="Participe de aulas em tempo real com especialistas do mercado"
+      />
 
-      {/* Hero */}
+      {/* Hero — forest treatment do DS com glow volt */}
       {isLoading ? (
         <Skeleton className="h-60 rounded-2xl" />
       ) : (
         nextClass && (
-          <div className="relative overflow-hidden rounded-2xl bg-black p-6 text-white sm:p-8">
-            <div className="absolute -top-8 -right-8 size-40 rounded-full bg-[#BAF241]/10" />
-            <div className="absolute -bottom-4 -left-4 size-24 rounded-full bg-[#BAF241]/5" />
-            <Badge className="mb-4 border-0 bg-[#BAF241]/10 text-[10px] font-bold tracking-wider text-[#BAF241] uppercase">
-              Próxima Aula
-            </Badge>
-            <h2 className="mb-2 text-xl font-bold sm:text-2xl">{nextClass.title}</h2>
-            <p className="max-w-xl text-sm text-white/60">{nextClass.description}</p>
-            <div className="mt-4 flex items-center gap-3">
-              <Avatar className="size-9">
-                <AvatarFallback className="bg-[#BAF241] text-xs font-bold text-black">
-                  {nextClass.instructorInitials}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium">{nextClass.instructorName}</p>
-                <p className="text-xs text-white/50">{nextClass.instructorRole}</p>
+          <div className="from-forest-800 to-forest-950 relative overflow-hidden rounded-2xl bg-gradient-to-br p-6 text-white sm:p-8">
+            <div
+              className="pointer-events-none absolute -top-16 -right-16 size-72 rounded-full blur-2xl"
+              style={{ background: "radial-gradient(circle, rgba(186,242,65,.16), transparent 62%)" }}
+            />
+            <div className="relative z-10">
+              <span className="text-volt text-xs font-bold tracking-[0.14em] uppercase">Próxima Aula</span>
+              <h2 className="font-display mt-3 mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
+                {nextClass.title}
+              </h2>
+              <p className="max-w-xl text-sm leading-relaxed text-white/70">{nextClass.description}</p>
+              <div className="mt-4 flex items-center gap-3">
+                <Avatar className="size-9">
+                  <AvatarFallback className="bg-volt text-ink text-xs font-bold">
+                    {nextClass.instructorInitials}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-sm font-medium">{nextClass.instructorName}</p>
+                  <p className="text-xs text-white/50">{nextClass.instructorRole}</p>
+                </div>
               </div>
-            </div>
-            <div className="mt-5 flex flex-wrap items-center gap-4 text-sm text-white/70">
-              <span className="flex items-center gap-1.5">
-                <IconCalendar className="size-4" />
-                {formatDate(nextClass.scheduledAt)}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <IconClock className="size-4" />
-                {formatTime(nextClass.scheduledAt)} · {formatDuration(nextClass.durationMinutes)}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <IconUsers className="size-4" />
-                {nextClass.attendeesCount}/{nextClass.maxAttendees} inscritos
-              </span>
-            </div>
-            <div className="mt-5 flex gap-3">
-              <Button
-                className="gap-1.5 bg-[#BAF241] text-black hover:bg-[#BAF241]/90"
-                onClick={() => toggleRegistration({ classId: nextClass.id, isRegistered: nextClass.isRegistered })}
-              >
-                <IconCalendarEvent className="size-4" />
-                {nextClass.isRegistered ? "Inscrito" : "Inscrever-se"}
-              </Button>
-              <Button variant="outline" className="gap-1.5 border-white/20 text-white hover:bg-white/10">
-                <IconBell className="size-4" />
-                Lembrete
-              </Button>
+              <div className="mt-5 flex flex-wrap items-center gap-2.5 text-[13px] text-white/90">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 backdrop-blur-sm">
+                  <IconCalendar className="size-3.5" />
+                  {formatDate(nextClass.scheduledAt)}
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 backdrop-blur-sm">
+                  <IconClock className="size-3.5" />
+                  {formatTime(nextClass.scheduledAt)} · {formatDuration(nextClass.durationMinutes)}
+                </span>
+                <span className="border-volt/40 text-volt inline-flex items-center gap-1.5 rounded-full border bg-white/5 px-3 py-1 backdrop-blur-sm">
+                  <IconUsers className="size-3.5" />
+                  {nextClass.attendeesCount}/{nextClass.maxAttendees} inscritos
+                </span>
+              </div>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <button
+                  className="bg-volt text-ink inline-flex items-center gap-2 rounded-full py-2.5 pr-2.5 pl-5 text-sm font-bold transition-all hover:-translate-y-px hover:shadow-[0_8px_24px_rgba(186,242,65,0.35)]"
+                  onClick={() => toggleRegistration({ classId: nextClass.id, isRegistered: nextClass.isRegistered })}
+                >
+                  {nextClass.isRegistered ? "Inscrito" : "Inscrever-se"}
+                  <span className="bg-ink text-volt grid size-7 place-items-center rounded-full">
+                    <IconCalendarEvent className="size-4" />
+                  </span>
+                </button>
+                <button className="inline-flex items-center gap-2 rounded-full border border-white/25 px-5 py-2.5 text-sm font-bold text-white transition-all hover:-translate-y-px hover:bg-white/10">
+                  <IconBell className="size-4" />
+                  Lembrete
+                </button>
+              </div>
             </div>
           </div>
         )
@@ -192,7 +212,7 @@ export default function AulasAoVivoPage() {
         {isLoading ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-52 rounded-xl" />
+              <Skeleton key={i} className="h-72 rounded-2xl" />
             ))}
           </div>
         ) : (
@@ -241,46 +261,59 @@ export default function AulasAoVivoPage() {
 function ClassCard({ cls, onToggle }: { cls: LiveClass; onToggle: () => void }) {
   const isRecorded = cls.status === "recorded";
   const isLive = cls.status === "live";
+  const Icon = CATEGORY_ICONS[cls.category] ?? IconVideo;
+
+  const occupancy = cls.maxAttendees > 0 ? Math.min(100, Math.round((cls.attendeesCount / cls.maxAttendees) * 100)) : 0;
 
   return (
-    <Card className="group gap-0 overflow-hidden py-0 transition-all duration-200 hover:shadow-md">
-      <div className={cn("relative overflow-hidden p-5", isRecorded ? "bg-[#BAF241]" : "bg-black")}>
-        <div
+    <div className="group bg-card flex flex-col overflow-hidden rounded-2xl border border-black/[0.06] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(11,11,11,0.10)]">
+      {/* Thumbnail — forest treatment do DS */}
+      <div className="img-dark relative flex aspect-[16/10] items-center justify-center">
+        <Icon className="text-volt/90 size-12" strokeWidth={1.5} />
+        <span
           className={cn(
-            "absolute -top-4 -right-4 size-20 rounded-full opacity-[0.08]",
-            isRecorded ? "bg-black" : "bg-[#BAF241]",
+            "absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold backdrop-blur-sm",
+            isLive
+              ? "animate-pulse bg-red-500 text-white"
+              : isRecorded
+                ? "bg-volt text-ink"
+                : "border border-white/25 bg-black/40 text-white",
           )}
-        />
-        <div className="mb-3 flex items-center justify-between">
-          <Badge
-            className={cn(
-              "border-0 text-[10px] font-bold tracking-wider uppercase",
-              isRecorded
-                ? "bg-black/10 text-black/70"
-                : isLive
-                  ? "animate-pulse bg-red-500 text-white"
-                  : "bg-[#BAF241]/10 text-[#BAF241]",
-            )}
-          >
-            {isLive ? "Ao Vivo" : isRecorded ? "Gravação" : cls.category}
-          </Badge>
-        </div>
-        <h3 className={cn("text-sm leading-snug font-semibold", isRecorded ? "text-black" : "text-white")}>
-          {cls.title}
-        </h3>
-        <div className={cn("mt-2 flex items-center gap-2", isRecorded ? "text-black/50" : "text-white/50")}>
+        >
+          {isLive && <span className="size-1.5 rounded-full bg-white" />}
+          {isLive ? "Ao Vivo" : isRecorded ? "Gravação" : cls.category}
+        </span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-4">
+        <h3 className="font-display line-clamp-2 text-[17px] leading-tight font-bold tracking-tight">{cls.title}</h3>
+
+        <div className="mt-2 flex items-center gap-2 text-[var(--tbo-gray-500)]">
           <Avatar className="size-6">
-            <AvatarFallback
-              className={cn("text-[9px] font-bold", isRecorded ? "bg-black text-[#BAF241]" : "bg-[#BAF241] text-black")}
-            >
+            <AvatarFallback className="bg-forest-900 text-volt text-[9px] font-bold">
               {cls.instructorInitials}
             </AvatarFallback>
           </Avatar>
           <span className="text-xs">{cls.instructorName}</span>
         </div>
-      </div>
-      <CardContent className="space-y-3 p-4">
-        <div className="text-muted-foreground flex items-center justify-between text-xs">
+
+        {/* Lotação — barra volt do DS */}
+        {!isRecorded && (
+          <div className="mt-3 space-y-1">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-[var(--tbo-gray-500)]">Inscritos</span>
+              <span className="font-semibold">
+                {cls.attendeesCount}/{cls.maxAttendees}
+              </span>
+            </div>
+            <div className="pbar">
+              <span style={{ width: `${occupancy}%` }} />
+            </div>
+          </div>
+        )}
+
+        {/* Meta info */}
+        <div className="mt-3 flex items-center gap-3 text-xs text-[var(--tbo-gray-500)]">
           <span className="flex items-center gap-1">
             <IconCalendar className="size-3" />
             {formatDate(cls.scheduledAt)}
@@ -290,31 +323,37 @@ function ClassCard({ cls, onToggle }: { cls: LiveClass; onToggle: () => void }) 
             {formatTime(cls.scheduledAt)} · {formatDuration(cls.durationMinutes)}
           </span>
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-muted-foreground flex items-center gap-1 text-xs">
+
+        {isRecorded && (
+          <div className="mt-3 flex items-center gap-1 text-xs text-[var(--tbo-gray-500)]">
             <IconUsers className="size-3" />
             {cls.attendeesCount} participantes
-          </span>
-          <Button
-            size="sm"
-            variant={isRecorded ? "outline" : "default"}
-            className={cn("gap-1 text-xs", !isRecorded && "bg-[#BAF241] text-black hover:bg-[#BAF241]/90")}
-            onClick={onToggle}
-          >
-            {isRecorded ? (
-              <>
-                <IconPlayerPlay className="size-3" />
-                Assistir
-              </>
-            ) : (
-              <>
-                <IconCalendarEvent className="size-3" />
-                {cls.isRegistered ? "Inscrito" : "Inscrever"}
-              </>
-            )}
-          </Button>
+          </div>
+        )}
+
+        {/* CTA — pill do DS */}
+        <div className="mt-4">
+          {isRecorded ? (
+            <button
+              onClick={onToggle}
+              className="text-ink flex w-full items-center justify-center gap-2 rounded-full border border-black/10 py-2.5 text-sm font-bold transition-all hover:-translate-y-px hover:bg-black/[0.04]"
+            >
+              <IconPlayerPlay className="size-4" />
+              Assistir
+            </button>
+          ) : (
+            <button
+              onClick={onToggle}
+              className="bg-forest-900 hover:bg-ink flex w-full items-center justify-between rounded-full py-2.5 pr-2.5 pl-5 text-sm font-bold text-white transition-all hover:-translate-y-px"
+            >
+              {cls.isRegistered ? "Inscrito" : "Inscrever-se"}
+              <span className="bg-volt text-ink grid size-7 place-items-center rounded-full">
+                <IconCalendarEvent className="size-4" />
+              </span>
+            </button>
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

@@ -45,3 +45,6 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# DS reference (mockups do design system — não versionar)
+.ds-ref/

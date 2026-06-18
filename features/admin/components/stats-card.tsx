@@ -36,10 +36,10 @@ function TrendBadge({ trend, label }: { trend: number; label?: string }) {
 
 export function StatsCard({ label, value, icon, trend, trendLabel, loading }: StatsCardProps) {
   return (
-    <div className="bg-card flex flex-col gap-3 rounded-xl border p-5">
+    <div className="bg-card flex flex-col gap-3 rounded-2xl border border-black/[0.06] p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(11,11,11,0.10)]">
       <div className="flex items-center justify-between">
-        <span className="text-muted-foreground text-sm font-medium">{label}</span>
-        <span className="text-muted-foreground/60">{icon}</span>
+        <span className="text-sm font-medium text-[var(--tbo-gray-500)]">{label}</span>
+        <span className="text-forest-500/70">{icon}</span>
       </div>
       {loading ? (
         <>
@@ -48,7 +48,7 @@ export function StatsCard({ label, value, icon, trend, trendLabel, loading }: St
         </>
       ) : (
         <>
-          <span className="text-3xl font-bold tracking-tight tabular-nums">
+          <span className="font-display text-3xl font-bold tracking-tight tabular-nums">
             {typeof value === "number" ? value.toLocaleString("pt-BR") : value}
           </span>
           {trend !== undefined && <TrendBadge trend={trend} label={trendLabel} />}

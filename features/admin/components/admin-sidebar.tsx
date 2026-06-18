@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { TboMark } from "@/components/brand/tbo-logo";
 
 const ADMIN_NAV = [
   {
@@ -52,16 +53,20 @@ export function AdminSidebar() {
 
   return (
     <Sidebar variant="inset">
-      <SidebarHeader className="border-b px-4 py-3">
-        <div className="flex items-center gap-2">
-          <div className="flex size-7 items-center justify-center rounded-md bg-[#BAF241]">
-            <span className="text-[10px] font-black text-[#02261C]">A</span>
-          </div>
-          <div>
-            <p className="text-xs leading-none font-bold">TBO Academy</p>
-            <p className="text-muted-foreground mt-0.5 text-[10px] leading-none">Painel Admin</p>
-          </div>
-        </div>
+      <SidebarHeader className="border-sidebar-border border-b px-3 pt-3 pb-3">
+        <Link
+          href="/admin"
+          className="flex items-center gap-2.5 px-1 transition-opacity hover:opacity-80"
+          aria-label="TBO Academy — Painel Admin"
+        >
+          <TboMark className="h-7 w-7 shrink-0 text-white" />
+          <span className="min-w-0">
+            <span className="font-display block truncate text-sm font-extrabold tracking-tight text-white">
+              TBO Academy
+            </span>
+            <span className="text-muted-foreground mt-0.5 block text-[10px] leading-none">Painel Admin</span>
+          </span>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent>

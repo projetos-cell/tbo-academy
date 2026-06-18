@@ -5,6 +5,7 @@ import { IconEye, IconEyeOff, IconLoader2 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { useUpdateCourse } from "@/features/admin/hooks/use-admin-courses";
 import type { AdminCourse } from "@/features/admin/types";
+import { cn } from "@/lib/utils";
 
 interface PublishToggleProps {
   course: AdminCourse;
@@ -25,20 +26,22 @@ export function PublishToggle({ course }: PublishToggleProps) {
 
   return (
     <Button
-      variant={isPublished ? "outline" : "default"}
       size="sm"
       onClick={handleToggle}
       disabled={updateCourse.isPending}
-      className="gap-1.5"
+      className={cn(
+        "gap-1.5 rounded-full font-bold",
+        isPublished ? "bg-volt text-ink hover:bg-volt-600" : "bg-forest-900 hover:bg-ink text-white",
+      )}
     >
       {updateCourse.isPending ? (
         <IconLoader2 className="size-3.5 animate-spin" />
       ) : isPublished ? (
-        <IconEyeOff className="size-3.5" />
-      ) : (
         <IconEye className="size-3.5" />
+      ) : (
+        <IconEyeOff className="size-3.5" />
       )}
-      {isPublished ? "Despublicar" : "Publicar"}
+      {isPublished ? "Publicado" : "Publicar"}
     </Button>
   );
 }

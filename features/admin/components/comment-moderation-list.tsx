@@ -58,14 +58,16 @@ function CommentList({ status }: { status?: CommentStatus }) {
     return (
       <div className="mt-4 space-y-3">
         {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} className="h-36 rounded-lg" />
+          <Skeleton key={i} className="h-36 rounded-2xl" />
         ))}
       </div>
     );
   }
 
   if (!comments || comments.length === 0) {
-    return <div className="text-muted-foreground mt-8 py-16 text-center text-sm">Nenhum comentário encontrado.</div>;
+    return (
+      <div className="mt-8 py-16 text-center text-sm text-[var(--tbo-gray-500)]">Nenhum comentário encontrado.</div>
+    );
   }
 
   const allSelected = selected.length === comments.length && comments.length > 0;
@@ -74,12 +76,12 @@ function CommentList({ status }: { status?: CommentStatus }) {
     <div className="mt-4 space-y-3">
       {/* Bulk actions bar */}
       <div className="flex flex-wrap items-center gap-3">
-        <label className="text-muted-foreground flex cursor-pointer items-center gap-2 text-sm select-none">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--tbo-gray-500)] select-none">
           <input
             type="checkbox"
             checked={allSelected}
             onChange={() => setSelected(allSelected ? [] : comments.map((c) => c.id))}
-            className="rounded"
+            className="accent-volt size-4 rounded"
           />
           {selected.length > 0 ? `${selected.length} selecionado(s)` : "Selecionar todos"}
         </label>
@@ -88,8 +90,7 @@ function CommentList({ status }: { status?: CommentStatus }) {
           <>
             <Button
               size="sm"
-              variant="outline"
-              className="h-7 gap-1 border-green-200 text-xs text-green-600 hover:bg-green-50"
+              className="bg-forest-900 hover:bg-ink h-7 gap-1 rounded-full text-xs text-white"
               onClick={handleBatchApprove}
               disabled={batchModerate.isPending}
             >
@@ -103,7 +104,7 @@ function CommentList({ status }: { status?: CommentStatus }) {
             <Button
               size="sm"
               variant="outline"
-              className="text-destructive border-destructive/20 hover:bg-destructive/5 h-7 gap-1 text-xs"
+              className="text-destructive border-destructive/20 hover:bg-destructive/5 h-7 gap-1 rounded-full text-xs"
               onClick={handleBatchReject}
               disabled={batchModerate.isPending}
             >

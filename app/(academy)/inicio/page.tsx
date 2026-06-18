@@ -64,7 +64,7 @@ function AuthenticatedDashboard() {
               <IconFlame className="mr-1 size-3" />
               {streak} dias seguidos
             </Badge>
-            <h1 className="text-2xl font-bold md:text-3xl">Bem-vindo à TBO Academy</h1>
+            <h1 className="font-display text-2xl font-bold tracking-tight md:text-3xl">Bem-vindo à TBO Academy</h1>
             <p className="max-w-lg text-sm text-white/60">
               Continue de onde parou. Você está a caminho de dominar novas habilidades criativas.
             </p>

@@ -90,7 +90,7 @@ export function LessonEditorDialog({ open, onClose, moduleId, courseId, lesson }
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>{isEditing ? "Editar Aula" : "Nova Aula"}</DialogTitle>
+          <DialogTitle className="font-display tracking-tight">{isEditing ? "Editar Aula" : "Nova Aula"}</DialogTitle>
           <DialogDescription>
             {isEditing
               ? "Atualize os dados desta aula."
@@ -142,7 +142,7 @@ export function LessonEditorDialog({ open, onClose, moduleId, courseId, lesson }
                   placeholder="https://vimeo.com/... ou YouTube..."
                   type="url"
                 />
-                <p className="text-muted-foreground mt-1 text-xs">Cole o link do Vimeo, YouTube ou URL direta.</p>
+                <p className="mt-1 text-xs text-[var(--tbo-gray-500)]">Cole o link do Vimeo, YouTube ou URL direta.</p>
               </TabsContent>
 
               <TabsContent value="upload" className="mt-2">
@@ -156,10 +156,10 @@ export function LessonEditorDialog({ open, onClose, moduleId, courseId, lesson }
           </div>
 
           {/* Free toggle */}
-          <div className="flex items-center justify-between rounded-lg border p-3">
+          <div className="bg-paper-off flex items-center justify-between rounded-2xl border border-black/[0.06] p-3">
             <div>
-              <p className="text-sm font-medium">Aula gratuita</p>
-              <p className="text-muted-foreground text-xs">Alunos sem matrícula podem assistir esta aula.</p>
+              <p className="text-sm font-semibold">Aula gratuita</p>
+              <p className="text-xs text-[var(--tbo-gray-500)]">Alunos sem matrícula podem assistir esta aula.</p>
             </div>
             <Switch checked={isFree} onCheckedChange={setIsFree} />
           </div>

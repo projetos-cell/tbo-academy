@@ -38,7 +38,7 @@ export function ThumbnailUploader({ value, onChange, onClear }: ThumbnailUploade
 
   if (value) {
     return (
-      <div className="bg-muted relative aspect-video overflow-hidden rounded-lg border">
+      <div className="bg-muted relative aspect-video overflow-hidden rounded-2xl border border-black/[0.06]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={value} alt="Thumbnail" className="h-full w-full object-cover" />
         {onClear && (
@@ -59,37 +59,41 @@ export function ThumbnailUploader({ value, onChange, onClear }: ThumbnailUploade
       <div
         {...getRootProps()}
         className={cn(
-          "flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-4 text-center transition-colors",
-          isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-muted/40",
+          "flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed p-4 text-center transition-colors",
+          isDragActive ? "border-volt bg-volt/10" : "hover:border-forest-500/50 hover:bg-paper-off border-black/[0.12]",
           uploading && "cursor-not-allowed opacity-60",
         )}
       >
         <input {...getInputProps()} />
         {uploading ? (
           <div className="w-full space-y-2 px-4">
-            <div className="text-muted-foreground flex justify-between text-xs">
+            <div className="flex justify-between text-xs text-[var(--tbo-gray-500)]">
               <span>Enviando...</span>
-              <span>{progress}%</span>
+              <span className="font-display font-bold tracking-tight">{progress}%</span>
             </div>
-            <div className="bg-muted h-1.5 overflow-hidden rounded-full">
-              <div
-                className="bg-primary h-full rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
+            <div className="pbar">
+              <span style={{ width: `${progress}%` }} />
             </div>
           </div>
         ) : (
           <>
-            {isDragActive ? (
-              <IconPhoto className="text-primary size-7" />
-            ) : (
-              <IconUpload className="text-muted-foreground size-7" />
-            )}
+            <span
+              className={cn(
+                "grid size-11 place-items-center rounded-full",
+                isDragActive ? "bg-volt text-ink" : "bg-forest-900 text-volt",
+              )}
+            >
+              {isDragActive ? (
+                <IconPhoto className="size-5" strokeWidth={1.5} />
+              ) : (
+                <IconUpload className="size-5" strokeWidth={1.5} />
+              )}
+            </span>
             <div>
               <p className="text-sm font-medium">
                 {isDragActive ? "Solte a imagem aqui" : "Arraste uma imagem ou clique"}
               </p>
-              <p className="text-muted-foreground mt-0.5 text-xs">JPG, PNG, WebP</p>
+              <p className="mt-0.5 text-xs text-[var(--tbo-gray-500)]">JPG, PNG, WebP</p>
             </div>
           </>
         )}

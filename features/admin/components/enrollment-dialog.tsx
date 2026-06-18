@@ -50,27 +50,28 @@ export function EnrollmentDialog({ user, open, onOpenChange }: EnrollmentDialogP
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[80vh] max-w-lg flex-col">
         <DialogHeader>
-          <DialogTitle>Gerenciar Matrículas</DialogTitle>
+          <span className="text-forest-500 text-xs font-bold tracking-[0.14em] uppercase">Administração</span>
+          <DialogTitle className="font-display tracking-tight">Gerenciar Matrículas</DialogTitle>
         </DialogHeader>
 
         {user && (
-          <div className="flex items-center gap-3 border-b pb-4">
+          <div className="flex items-center gap-3 border-b border-black/[0.06] pb-4">
             <Avatar className="size-10">
               <AvatarImage src={user.avatar_url ?? undefined} />
-              <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">{initials}</AvatarFallback>
+              <AvatarFallback className="bg-forest-900 text-volt text-xs font-semibold">{initials}</AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium">{user.full_name ?? "Sem nome"}</p>
-              <p className="text-muted-foreground truncate text-xs">{user.email}</p>
+              <p className="truncate text-sm font-semibold">{user.full_name ?? "Sem nome"}</p>
+              <p className="truncate text-xs text-[var(--tbo-gray-500)]">{user.email}</p>
             </div>
           </div>
         )}
 
         <div className="flex-1 space-y-1 overflow-y-auto py-1">
           {isLoading ? (
-            Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-14 rounded-lg" />)
+            Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-14 rounded-xl" />)
           ) : publishedCourses.length === 0 ? (
-            <p className="text-muted-foreground py-8 text-center text-sm">Nenhum curso disponível.</p>
+            <p className="py-8 text-center text-sm text-[var(--tbo-gray-500)]">Nenhum curso disponível.</p>
           ) : (
             publishedCourses.map((course) => {
               const enrolled = enrolledCourseIds.has(course.id);
@@ -79,14 +80,14 @@ export function EnrollmentDialog({ user, open, onOpenChange }: EnrollmentDialogP
               return (
                 <div
                   key={course.id}
-                  className="hover:bg-muted/50 flex items-center gap-3 rounded-lg px-3 py-3 transition-colors"
+                  className="hover:bg-paper-off flex items-center gap-3 rounded-xl px-3 py-3 transition-colors"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{course.title}</p>
-                    {course.category && <p className="text-muted-foreground text-xs">{course.category}</p>}
+                    <p className="truncate text-sm font-semibold">{course.title}</p>
+                    {course.category && <p className="text-xs text-[var(--tbo-gray-500)]">{course.category}</p>}
                   </div>
                   {isPending ? (
-                    <IconLoader2 className="text-muted-foreground size-4 animate-spin" />
+                    <IconLoader2 className="size-4 animate-spin text-[var(--tbo-gray-500)]" />
                   ) : (
                     <Switch
                       checked={enrolled}
@@ -100,13 +101,13 @@ export function EnrollmentDialog({ user, open, onOpenChange }: EnrollmentDialogP
           )}
         </div>
 
-        <div className="text-muted-foreground flex items-center justify-between border-t pt-3 text-xs">
+        <div className="flex items-center justify-between border-t border-black/[0.06] pt-3 text-xs text-[var(--tbo-gray-500)]">
           <span>
             {enrolledCourseIds.size} de {publishedCourses.length} curso(s) matriculado(s)
           </span>
           <button
             onClick={() => onOpenChange(false)}
-            className="hover:text-foreground flex items-center gap-1 transition-colors"
+            className="hover:text-ink flex items-center gap-1 font-semibold transition-colors"
           >
             <IconX className="size-3" />
             Fechar

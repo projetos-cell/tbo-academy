@@ -13,12 +13,20 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { IconGripVertical, IconPlus, IconX, IconBook2, IconPhoto } from "@tabler/icons-react";
+import {
+  IconGripVertical,
+  IconPlus,
+  IconX,
+  IconBook2,
+  IconPhoto,
+  IconEye,
+  IconEyeOff,
+  IconArrowRight,
+} from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useAdminCourses } from "@/features/admin/hooks/use-admin-courses";
 import {
   useAdminLearningPaths,
@@ -37,20 +45,23 @@ function SortableCourseItem({ course, onRemove }: { course: AdminCourse; onRemov
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`bg-card group flex items-center gap-2 rounded-lg border p-2.5 text-sm ${isDragging ? "opacity-40 shadow-lg" : ""}`}
+      className={`bg-card group flex items-center gap-2 rounded-xl border border-black/[0.06] p-2.5 text-sm shadow-sm ${isDragging ? "opacity-40 shadow-lg" : ""}`}
     >
       <button
         {...attributes}
         {...listeners}
-        className="text-muted-foreground hover:text-foreground cursor-grab touch-none"
+        className="hover:text-ink cursor-grab touch-none text-[var(--tbo-gray-400)] transition-colors"
       >
         <IconGripVertical className="size-4" />
       </button>
       <div className="min-w-0 flex-1">
-        <p className="truncate font-medium">{course.title}</p>
+        <p className="truncate font-semibold">{course.title}</p>
         <div className="mt-0.5 flex items-center gap-2">
           {course.level && (
-            <Badge variant="outline" className="h-4 px-1.5 text-[10px]">
+            <Badge
+              variant="outline"
+              className="text-forest-700 bg-paper-off h-4 border-black/[0.06] px-1.5 text-[10px] font-semibold"
+            >
               {course.level}
             </Badge>
           )}
@@ -59,8 +70,8 @@ function SortableCourseItem({ course, onRemove }: { course: AdminCourse; onRemov
               variant="outline"
               className={`h-4 px-1.5 text-[10px] ${
                 course.status === "published"
-                  ? "border-emerald-300 text-emerald-600"
-                  : "text-muted-foreground border-gray-200"
+                  ? "bg-volt text-ink border-transparent"
+                  : "border-black/[0.06] text-[var(--tbo-gray-500)]"
               }`}
             >
               {course.status === "published" ? "Publicado" : "Rascunho"}
@@ -70,7 +81,7 @@ function SortableCourseItem({ course, onRemove }: { course: AdminCourse; onRemov
       </div>
       <button
         onClick={onRemove}
-        className="text-muted-foreground/40 hover:text-destructive shrink-0 opacity-0 transition-colors group-hover:opacity-100"
+        className="hover:text-destructive shrink-0 text-[var(--tbo-gray-400)] opacity-0 transition-colors group-hover:opacity-100"
       >
         <IconX className="size-3.5" />
       </button>
@@ -84,16 +95,18 @@ function AvailableCourseItem({ course, onAdd }: { course: AdminCourse; onAdd: ()
   return (
     <button
       onClick={onAdd}
-      className="bg-card hover:border-primary/50 hover:bg-primary/5 group flex w-full items-center gap-2.5 rounded-lg border p-2.5 text-left text-sm transition-colors"
+      className="bg-card hover:border-forest-900/30 hover:bg-paper-off group flex w-full items-center gap-2.5 rounded-xl border border-black/[0.06] p-2.5 text-left text-sm shadow-sm transition-all"
     >
-      <div className="bg-muted flex size-8 flex-shrink-0 items-center justify-center rounded-md">
-        <IconBook2 className="text-muted-foreground size-4" />
+      <div className="bg-forest-900 flex size-8 flex-shrink-0 items-center justify-center rounded-lg">
+        <IconBook2 className="text-volt size-4" />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate font-medium">{course.title}</p>
-        <p className="text-muted-foreground truncate text-xs">{course.category ?? "Sem categoria"}</p>
+        <p className="truncate font-semibold">{course.title}</p>
+        <p className="truncate text-xs text-[var(--tbo-gray-500)]">{course.category ?? "Sem categoria"}</p>
       </div>
-      <IconPlus className="text-muted-foreground group-hover:text-primary size-4 shrink-0 transition-colors" />
+      <span className="bg-paper-off text-ink group-hover:bg-volt grid size-6 shrink-0 place-items-center rounded-full transition-colors">
+        <IconPlus className="size-3.5" />
+      </span>
     </button>
   );
 }
@@ -105,30 +118,32 @@ function PathRow({ path, onEdit, onDelete }: { path: AdminLearningPath; onEdit: 
   const courseCount = path.courses?.length ?? 0;
 
   return (
-    <div className="bg-card hover:border-primary/30 group flex items-center gap-4 rounded-xl border p-4 transition-colors">
+    <div className="bg-card group flex items-center gap-4 rounded-2xl border border-black/[0.06] p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(11,11,11,0.10)]">
       {/* Thumbnail */}
-      <div className="bg-muted flex size-12 shrink-0 items-center justify-center rounded-lg">
+      <div className="img-dark flex size-12 shrink-0 items-center justify-center rounded-xl">
         {path.thumbnail_url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={path.thumbnail_url} alt="" className="size-full rounded-lg object-cover" />
+          <img src={path.thumbnail_url} alt="" className="size-full rounded-xl object-cover" />
         ) : (
-          <IconPhoto className="text-muted-foreground/40 size-5" />
+          <IconPhoto className="text-volt/80 size-5" />
         )}
       </div>
 
       {/* Info */}
       <div className="min-w-0 flex-1">
-        <p className="truncate font-semibold">{path.title}</p>
-        <p className="text-muted-foreground mt-0.5 truncate text-xs">
+        <p className="font-display truncate text-[15px] font-bold tracking-tight">{path.title}</p>
+        <p className="mt-0.5 truncate text-xs text-[var(--tbo-gray-500)]">
           {path.description ?? "Sem descrição"} · {courseCount} curso{courseCount !== 1 ? "s" : ""}
         </p>
       </div>
 
       {/* Status toggle */}
-      <Button
-        size="sm"
-        variant={path.status === "published" ? "outline" : "default"}
-        className="shrink-0 gap-1.5"
+      <button
+        className={
+          path.status === "published"
+            ? "text-ink inline-flex shrink-0 items-center gap-1.5 rounded-full border border-black/10 px-4 py-2 text-xs font-bold transition-all hover:-translate-y-px hover:bg-black/[0.04]"
+            : "bg-forest-900 hover:bg-ink inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold text-white transition-all hover:-translate-y-px"
+        }
         onClick={() =>
           updatePath({
             pathId: path.id,
@@ -138,7 +153,7 @@ function PathRow({ path, onEdit, onDelete }: { path: AdminLearningPath; onEdit: 
       >
         {path.status === "published" ? <IconEyeOff className="size-3.5" /> : <IconEye className="size-3.5" />}
         {path.status === "published" ? "Despublicar" : "Publicar"}
-      </Button>
+      </button>
 
       {/* Actions */}
       <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
@@ -229,21 +244,28 @@ function PathEditorPanel({ path, onClose }: { path: AdminLearningPath | null; on
   const isPending = creating || updating;
 
   return (
-    <div className="bg-card overflow-hidden rounded-xl border">
+    <div className="bg-card overflow-hidden rounded-2xl border border-black/[0.06] shadow-sm">
       {/* Header */}
-      <div className="bg-muted/30 flex items-center justify-between border-b px-5 py-4">
-        <h3 className="text-sm font-semibold">{isNew ? "Nova Trilha de Aprendizado" : `Editar: ${path!.title}`}</h3>
-        <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
+      <div className="bg-paper-off flex items-center justify-between border-b border-black/[0.06] px-5 py-4">
+        <div>
+          <span className="text-forest-500 text-[10px] font-bold tracking-[0.14em] uppercase">
+            {isNew ? "Nova trilha" : "Editar trilha"}
+          </span>
+          <h3 className="font-display mt-0.5 text-base font-bold tracking-tight">
+            {isNew ? "Trilha de Aprendizado" : path!.title}
+          </h3>
+        </div>
+        <button onClick={onClose} className="hover:text-ink text-[var(--tbo-gray-400)] transition-colors">
           <IconX className="size-4" />
         </button>
       </div>
 
-      <div className="grid grid-cols-1 divide-y lg:grid-cols-2 lg:divide-x lg:divide-y-0">
+      <div className="grid grid-cols-1 divide-y divide-black/[0.06] lg:grid-cols-2 lg:divide-x lg:divide-y-0">
         {/* Left: metadata + available courses */}
         <div className="space-y-4 p-5">
           <div className="space-y-3">
             <div>
-              <label className="text-muted-foreground mb-1 block text-xs font-medium">Título</label>
+              <label className="mb-1 block text-xs font-semibold text-[var(--tbo-gray-600)]">Título</label>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -252,7 +274,7 @@ function PathEditorPanel({ path, onClose }: { path: AdminLearningPath | null; on
               />
             </div>
             <div>
-              <label className="text-muted-foreground mb-1 block text-xs font-medium">Slug</label>
+              <label className="mb-1 block text-xs font-semibold text-[var(--tbo-gray-600)]">Slug</label>
               <Input
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
@@ -261,7 +283,7 @@ function PathEditorPanel({ path, onClose }: { path: AdminLearningPath | null; on
               />
             </div>
             <div>
-              <label className="text-muted-foreground mb-1 block text-xs font-medium">Descrição</label>
+              <label className="mb-1 block text-xs font-semibold text-[var(--tbo-gray-600)]">Descrição</label>
               <Input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -272,7 +294,9 @@ function PathEditorPanel({ path, onClose }: { path: AdminLearningPath | null; on
           </div>
 
           <div>
-            <p className="text-muted-foreground mb-2 text-xs font-medium">Cursos disponíveis — clique para adicionar</p>
+            <p className="text-forest-500 mb-2 text-[10px] font-bold tracking-[0.14em] uppercase">
+              Cursos disponíveis — clique para adicionar
+            </p>
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -295,12 +319,14 @@ function PathEditorPanel({ path, onClose }: { path: AdminLearningPath | null; on
 
         {/* Right: selected courses (DnD sortable) */}
         <div className="space-y-3 p-5">
-          <p className="text-muted-foreground text-xs font-medium">Cursos na trilha — arraste para reordenar</p>
+          <p className="text-forest-500 text-[10px] font-bold tracking-[0.14em] uppercase">
+            Cursos na trilha — arraste para reordenar
+          </p>
 
           {selectedCourses.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-8 text-center">
-              <IconBook2 className="text-muted-foreground/30 size-8" />
-              <p className="text-muted-foreground text-xs">Adicione cursos da lista ao lado</p>
+            <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-black/10 p-8 text-center">
+              <IconBook2 className="size-8 text-[var(--tbo-gray-400)]" />
+              <p className="text-xs text-[var(--tbo-gray-500)]">Adicione cursos da lista ao lado</p>
             </div>
           ) : (
             <DndContext
@@ -323,9 +349,9 @@ function PathEditorPanel({ path, onClose }: { path: AdminLearningPath | null; on
 
               <DragOverlay>
                 {activeCourse && (
-                  <div className="bg-card flex items-center gap-2 rounded-lg border p-2.5 text-sm opacity-90 shadow-xl">
-                    <IconGripVertical className="text-muted-foreground size-4" />
-                    <span className="font-medium">{activeCourse.title}</span>
+                  <div className="bg-card flex items-center gap-2 rounded-xl border border-black/[0.06] p-2.5 text-sm opacity-90 shadow-xl">
+                    <IconGripVertical className="size-4 text-[var(--tbo-gray-400)]" />
+                    <span className="font-semibold">{activeCourse.title}</span>
                   </div>
                 )}
               </DragOverlay>
@@ -335,13 +361,20 @@ function PathEditorPanel({ path, onClose }: { path: AdminLearningPath | null; on
       </div>
 
       {/* Footer */}
-      <div className="bg-muted/30 flex items-center justify-end gap-2 border-t px-5 py-3">
+      <div className="bg-paper-off flex items-center justify-end gap-2 border-t border-black/[0.06] px-5 py-3">
         <Button variant="ghost" size="sm" onClick={onClose} disabled={isPending}>
           Cancelar
         </Button>
-        <Button size="sm" onClick={handleSave} disabled={!title || !slug || isPending}>
+        <button
+          onClick={handleSave}
+          disabled={!title || !slug || isPending}
+          className="bg-forest-900 hover:bg-ink inline-flex items-center gap-2 rounded-full py-2 pr-2 pl-4 text-sm font-bold text-white transition-all hover:-translate-y-px disabled:pointer-events-none disabled:opacity-50"
+        >
           {isPending ? "Salvando..." : isNew ? "Criar Trilha" : "Salvar Alterações"}
-        </Button>
+          <span className="bg-volt text-ink grid size-6 place-items-center rounded-full">
+            <IconArrowRight className="size-3.5" />
+          </span>
+        </button>
       </div>
     </div>
   );
@@ -369,14 +402,19 @@ export function LearningPathEditor() {
 
       {/* List header */}
       <div className="flex items-center justify-between">
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-[var(--tbo-gray-500)]">
           {isLoading ? "Carregando..." : `${paths.length} trilha${paths.length !== 1 ? "s" : ""}`}
         </p>
         {editing === null && (
-          <Button size="sm" className="h-8 gap-1.5" onClick={() => setEditing("new")}>
-            <IconPlus className="size-3.5" />
+          <button
+            onClick={() => setEditing("new")}
+            className="bg-forest-900 hover:bg-ink inline-flex items-center gap-2 rounded-full py-2 pr-2 pl-4 text-xs font-bold text-white transition-all hover:-translate-y-px"
+          >
             Nova Trilha
-          </Button>
+            <span className="bg-volt text-ink grid size-6 place-items-center rounded-full">
+              <IconPlus className="size-3.5" />
+            </span>
+          </button>
         )}
       </div>
 
@@ -388,18 +426,23 @@ export function LearningPathEditor() {
           ))}
         </div>
       ) : paths.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed p-12 text-center">
-          <IconBook2 className="text-muted-foreground/30 size-10" />
+        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-black/10 p-12 text-center">
+          <IconBook2 className="size-10 text-[var(--tbo-gray-400)]" />
           <div>
-            <p className="text-sm font-medium">Nenhuma trilha criada ainda</p>
-            <p className="text-muted-foreground mt-1 text-xs">
+            <p className="font-display text-base font-bold tracking-tight">Nenhuma trilha criada ainda</p>
+            <p className="mt-1 text-xs text-[var(--tbo-gray-500)]">
               Crie trilhas para organizar cursos em sequências de aprendizado.
             </p>
           </div>
-          <Button size="sm" onClick={() => setEditing("new")}>
-            <IconPlus className="mr-1.5 size-3.5" />
+          <button
+            onClick={() => setEditing("new")}
+            className="bg-forest-900 hover:bg-ink inline-flex items-center gap-2 rounded-full py-2 pr-2 pl-4 text-xs font-bold text-white transition-all hover:-translate-y-px"
+          >
             Criar primeira trilha
-          </Button>
+            <span className="bg-volt text-ink grid size-6 place-items-center rounded-full">
+              <IconPlus className="size-3.5" />
+            </span>
+          </button>
         </div>
       ) : (
         <div className="space-y-3">

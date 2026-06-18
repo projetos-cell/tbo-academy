@@ -46,12 +46,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const defaultOpen = sidebarCookie ? sidebarCookie.value === "true" : true;
 
   return (
-    <SidebarProvider defaultOpen={defaultOpen}>
-      <AdminSidebar />
-      <SidebarInset>
-        <Header />
-        <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
-      </SidebarInset>
-    </SidebarProvider>
+    <div className="academy-theme">
+      <SidebarProvider defaultOpen={defaultOpen}>
+        <AdminSidebar />
+        <SidebarInset>
+          <Header />
+          <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
+        </SidebarInset>
+      </SidebarProvider>
+    </div>
   );
 }

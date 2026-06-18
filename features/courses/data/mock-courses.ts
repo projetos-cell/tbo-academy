@@ -1,4 +1,4 @@
-import type { Course, CourseModule, LearningPath, LeaderboardEntry } from "../types"
+import type { Course, CourseModule, LearningPath, LeaderboardEntry } from "../types";
 
 // ─── Módulos de Mercado Imobiliário ─────────────────────────────
 
@@ -7,8 +7,7 @@ export const MOCK_COURSES: Course[] = [
   {
     id: "c1",
     title: "Introdução ao Mercado Imobiliário",
-    description:
-      "Conhecimento geral do mercado, segmentos (MCMV, Médio e Alto Padrão) e jornada do consumidor.",
+    description: "Conhecimento geral do mercado, segmentos (MCMV, Médio e Alto Padrão) e jornada do consumidor.",
     category: "Introdução",
     instructor: "Marco Andolfato",
     thumbnail: "intro",
@@ -26,8 +25,7 @@ export const MOCK_COURSES: Course[] = [
   {
     id: "c2",
     title: "O Lançamento Imobiliário",
-    description:
-      "Etapas do lançamento: planejamento, cronograma, teaser, pré-lançamento, lançamento e sustentação.",
+    description: "Etapas do lançamento: planejamento, cronograma, teaser, pré-lançamento, lançamento e sustentação.",
     category: "Lançamento",
     instructor: "Ruy Lima",
     thumbnail: "lancamento",
@@ -45,8 +43,7 @@ export const MOCK_COURSES: Course[] = [
   {
     id: "c3",
     title: "Branding para Lançamentos",
-    description:
-      "Storytelling do produto, critérios de marca, enxoval de vendas e identidade de empreendimento.",
+    description: "Storytelling do produto, critérios de marca, enxoval de vendas e identidade de empreendimento.",
     category: "Branding",
     instructor: "Marco Andolfato",
     thumbnail: "branding",
@@ -64,8 +61,7 @@ export const MOCK_COURSES: Course[] = [
   {
     id: "c4",
     title: "Marketing Imobiliário",
-    description:
-      "Princípios de Kotler (5P's), pesquisa e análise de mercado, plano de marketing e mídias.",
+    description: "Princípios de Kotler (5P's), pesquisa e análise de mercado, plano de marketing e mídias.",
     category: "Marketing",
     instructor: "Ruy Lima",
     thumbnail: "marketing",
@@ -83,8 +79,7 @@ export const MOCK_COURSES: Course[] = [
   {
     id: "c5",
     title: "Digital 3D e Renders",
-    description:
-      "A importância do render, como utilizar imagens para vendas e análise de storytelling 3D.",
+    description: "A importância do render, como utilizar imagens para vendas e análise de storytelling 3D.",
     category: "Digital 3D",
     instructor: "Equipe TBO",
     thumbnail: "3d",
@@ -102,8 +97,7 @@ export const MOCK_COURSES: Course[] = [
   {
     id: "c6",
     title: "Audiovisual Imobiliário",
-    description:
-      "Cinema no mercado imobiliário, processo criativo, impacto dos filmes e set de filmagem.",
+    description: "Cinema no mercado imobiliário, processo criativo, impacto dos filmes e set de filmagem.",
     category: "Audiovisual",
     instructor: "Equipe TBO",
     thumbnail: "audiovisual",
@@ -121,8 +115,7 @@ export const MOCK_COURSES: Course[] = [
   {
     id: "c7",
     title: "Processos do Lançamento",
-    description:
-      "Arquitetura e interiores, jurídico, vendas/comercial e incorporação imobiliária.",
+    description: "Arquitetura e interiores, jurídico, vendas/comercial e incorporação imobiliária.",
     category: "Processos",
     instructor: "Especialistas Convidados",
     thumbnail: "processos",
@@ -140,8 +133,7 @@ export const MOCK_COURSES: Course[] = [
   {
     id: "c8",
     title: "Metodologia TBO Core",
-    description:
-      "O framework proprietário da TBO para gestão completa de lançamentos imobiliários.",
+    description: "O framework proprietário da TBO para gestão completa de lançamentos imobiliários.",
     category: "Metodologia",
     instructor: "Marco Andolfato & Ruy Lima",
     thumbnail: "tbocore",
@@ -155,49 +147,186 @@ export const MOCK_COURSES: Course[] = [
     status: "em_andamento",
     tags: ["TBO Core", "metodologia", "framework", "gestão"],
   },
-]
+];
 
 // ─── Módulos (aulas) de cada curso ──────────────────────────────
 
 export const MOCK_MODULES: CourseModule[] = [
   // ── Módulo 1: Introdução ao Mercado Imobiliário ──
-  { id: "m1-1", courseId: "c1", title: "Conhecimento Geral do Mercado Imobiliário", duration: "1h 30min", order: 1, status: "completed", videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-  { id: "m1-2", courseId: "c1", title: "Segmentos de Mercado: MCMV, Médio e Alto Padrão", duration: "1h 30min", order: 2, status: "completed", videoUrl: "https://www.youtube.com/embed/LXb3EKWsInQ" },
-  { id: "m1-3", courseId: "c1", title: "Jornada do Consumidor sob a Ótica do Consumidor", duration: "1h 30min", order: 3, status: "completed" },
+  {
+    id: "m1-1",
+    courseId: "c1",
+    title: "Conhecimento Geral do Mercado Imobiliário",
+    duration: "1h 30min",
+    order: 1,
+    status: "completed",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  },
+  {
+    id: "m1-2",
+    courseId: "c1",
+    title: "Segmentos de Mercado: MCMV, Médio e Alto Padrão",
+    duration: "1h 30min",
+    order: 2,
+    status: "completed",
+    videoUrl: "https://www.youtube.com/embed/LXb3EKWsInQ",
+  },
+  {
+    id: "m1-3",
+    courseId: "c1",
+    title: "Jornada do Consumidor sob a Ótica do Consumidor",
+    duration: "1h 30min",
+    order: 3,
+    status: "completed",
+  },
 
   // ── Módulo 2: O Lançamento Imobiliário ──
-  { id: "m2-1", courseId: "c2", title: "Introdução: Etapas do Lançamento", duration: "1h 00min", order: 1, status: "completed", videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-  { id: "m2-2", courseId: "c2", title: "Preparação: Checklist para Cada Etapa", duration: "1h 15min", order: 2, status: "completed", videoUrl: "https://www.youtube.com/embed/LXb3EKWsInQ" },
-  { id: "m2-3", courseId: "c2", title: "Planejamento de Cronograma e Orçamento", duration: "1h 15min", order: 3, status: "completed" },
+  {
+    id: "m2-1",
+    courseId: "c2",
+    title: "Introdução: Etapas do Lançamento",
+    duration: "1h 00min",
+    order: 1,
+    status: "completed",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  },
+  {
+    id: "m2-2",
+    courseId: "c2",
+    title: "Preparação: Checklist para Cada Etapa",
+    duration: "1h 15min",
+    order: 2,
+    status: "completed",
+    videoUrl: "https://www.youtube.com/embed/LXb3EKWsInQ",
+  },
+  {
+    id: "m2-3",
+    courseId: "c2",
+    title: "Planejamento de Cronograma e Orçamento",
+    duration: "1h 15min",
+    order: 3,
+    status: "completed",
+  },
   { id: "m2-4", courseId: "c2", title: "Teaser", duration: "1h 00min", order: 4, status: "completed" },
   { id: "m2-5", courseId: "c2", title: "Pré-Lançamento", duration: "1h 00min", order: 5, status: "completed" },
   { id: "m2-6", courseId: "c2", title: "Lançamento", duration: "1h 15min", order: 6, status: "in_progress" },
   { id: "m2-7", courseId: "c2", title: "Sustentação", duration: "1h 15min", order: 7, status: "locked" },
 
   // ── Módulo 3a: Branding para Lançamentos ──
-  { id: "m3-1", courseId: "c3", title: "Por que Branding é Importante para o Lançamento?", duration: "1h 30min", order: 1, status: "completed" },
-  { id: "m3-2", courseId: "c3", title: "Como Criar Storytelling de um Produto Imobiliário?", duration: "1h 45min", order: 2, status: "completed" },
-  { id: "m3-3", courseId: "c3", title: "Critérios para Identificar se a Marca Representa o Produto", duration: "1h 30min", order: 3, status: "completed" },
-  { id: "m3-4", courseId: "c3", title: "Enxoval de Vendas — O que Compõe?", duration: "1h 30min", order: 4, status: "completed" },
+  {
+    id: "m3-1",
+    courseId: "c3",
+    title: "Por que Branding é Importante para o Lançamento?",
+    duration: "1h 30min",
+    order: 1,
+    status: "completed",
+  },
+  {
+    id: "m3-2",
+    courseId: "c3",
+    title: "Como Criar Storytelling de um Produto Imobiliário?",
+    duration: "1h 45min",
+    order: 2,
+    status: "completed",
+  },
+  {
+    id: "m3-3",
+    courseId: "c3",
+    title: "Critérios para Identificar se a Marca Representa o Produto",
+    duration: "1h 30min",
+    order: 3,
+    status: "completed",
+  },
+  {
+    id: "m3-4",
+    courseId: "c3",
+    title: "Enxoval de Vendas — O que Compõe?",
+    duration: "1h 30min",
+    order: 4,
+    status: "completed",
+  },
 
   // ── Módulo 3b: Marketing Imobiliário ──
-  { id: "m4-1", courseId: "c4", title: "Princípios do Marketing — Philip Kotler e os 5P's", duration: "1h 45min", order: 1, status: "completed" },
+  {
+    id: "m4-1",
+    courseId: "c4",
+    title: "Princípios do Marketing — Philip Kotler e os 5P's",
+    duration: "1h 45min",
+    order: 1,
+    status: "completed",
+  },
   { id: "m4-2", courseId: "c4", title: "Pesquisa de Mercado", duration: "1h 30min", order: 2, status: "completed" },
-  { id: "m4-3", courseId: "c4", title: "Análise de Mercado e Público Alvo", duration: "1h 45min", order: 3, status: "in_progress" },
+  {
+    id: "m4-3",
+    courseId: "c4",
+    title: "Análise de Mercado e Público Alvo",
+    duration: "1h 45min",
+    order: 3,
+    status: "in_progress",
+  },
   { id: "m4-4", courseId: "c4", title: "Plano de Marketing", duration: "1h 45min", order: 4, status: "locked" },
   { id: "m4-5", courseId: "c4", title: "Plano de Mídias", duration: "1h 30min", order: 5, status: "locked" },
   { id: "m4-6", courseId: "c4", title: "Show Time", duration: "1h 45min", order: 6, status: "locked" },
 
   // ── Módulo 3c: Digital 3D e Renders ──
-  { id: "m5-1", courseId: "c5", title: "A Importância do Render no Lançamento Imobiliário", duration: "1h 15min", order: 1, status: "locked" },
-  { id: "m5-2", courseId: "c5", title: "Como Utilizar as Imagens em Favor das Vendas", duration: "1h 30min", order: 2, status: "locked" },
-  { id: "m5-3", courseId: "c5", title: "Como é Criado um Render 3D?", duration: "1h 15min", order: 3, status: "locked" },
-  { id: "m5-4", courseId: "c5", title: "Análise de Imagem 3D como Storytelling do Produto", duration: "1h 30min", order: 4, status: "locked" },
+  {
+    id: "m5-1",
+    courseId: "c5",
+    title: "A Importância do Render no Lançamento Imobiliário",
+    duration: "1h 15min",
+    order: 1,
+    status: "locked",
+  },
+  {
+    id: "m5-2",
+    courseId: "c5",
+    title: "Como Utilizar as Imagens em Favor das Vendas",
+    duration: "1h 30min",
+    order: 2,
+    status: "locked",
+  },
+  {
+    id: "m5-3",
+    courseId: "c5",
+    title: "Como é Criado um Render 3D?",
+    duration: "1h 15min",
+    order: 3,
+    status: "locked",
+  },
+  {
+    id: "m5-4",
+    courseId: "c5",
+    title: "Análise de Imagem 3D como Storytelling do Produto",
+    duration: "1h 30min",
+    order: 4,
+    status: "locked",
+  },
 
   // ── Módulo 3d: Audiovisual Imobiliário ──
-  { id: "m6-1", courseId: "c6", title: "O Cinema no Mercado Imobiliário", duration: "1h 30min", order: 1, status: "completed" },
-  { id: "m6-2", courseId: "c6", title: "O Processo Criativo de um Filme", duration: "1h 30min", order: 2, status: "in_progress" },
-  { id: "m6-3", courseId: "c6", title: "O Impacto dos Filmes na Aquisição do Imóvel", duration: "1h 30min", order: 3, status: "locked" },
+  {
+    id: "m6-1",
+    courseId: "c6",
+    title: "O Cinema no Mercado Imobiliário",
+    duration: "1h 30min",
+    order: 1,
+    status: "completed",
+  },
+  {
+    id: "m6-2",
+    courseId: "c6",
+    title: "O Processo Criativo de um Filme",
+    duration: "1h 30min",
+    order: 2,
+    status: "in_progress",
+  },
+  {
+    id: "m6-3",
+    courseId: "c6",
+    title: "O Impacto dos Filmes na Aquisição do Imóvel",
+    duration: "1h 30min",
+    order: 3,
+    status: "locked",
+  },
   { id: "m6-4", courseId: "c6", title: "O Set de Filmagem", duration: "1h 30min", order: 4, status: "locked" },
 
   // ── Módulo 4: Processos do Lançamento ──
@@ -207,13 +336,58 @@ export const MOCK_MODULES: CourseModule[] = [
   { id: "m7-4", courseId: "c7", title: "Incorporação Imobiliária", duration: "1h 45min", order: 4, status: "locked" },
 
   // ── Metodologia TBO Core ──
-  { id: "m8-1", courseId: "c8", title: "Fundamentos do Framework TBO", duration: "2h 00min", order: 1, status: "completed" },
-  { id: "m8-2", courseId: "c8", title: "Diagnóstico e Planejamento", duration: "2h 00min", order: 2, status: "completed" },
-  { id: "m8-3", courseId: "c8", title: "Execução e Gestão de Entregas", duration: "2h 00min", order: 3, status: "completed" },
-  { id: "m8-4", courseId: "c8", title: "Métricas e Performance", duration: "2h 00min", order: 4, status: "in_progress" },
+  {
+    id: "m8-1",
+    courseId: "c8",
+    title: "Fundamentos do Framework TBO",
+    duration: "2h 00min",
+    order: 1,
+    status: "completed",
+  },
+  {
+    id: "m8-2",
+    courseId: "c8",
+    title: "Diagnóstico e Planejamento",
+    duration: "2h 00min",
+    order: 2,
+    status: "completed",
+  },
+  {
+    id: "m8-3",
+    courseId: "c8",
+    title: "Execução e Gestão de Entregas",
+    duration: "2h 00min",
+    order: 3,
+    status: "completed",
+  },
+  {
+    id: "m8-4",
+    courseId: "c8",
+    title: "Métricas e Performance",
+    duration: "2h 00min",
+    order: 4,
+    status: "in_progress",
+  },
   { id: "m8-5", courseId: "c8", title: "Escala e Replicação", duration: "2h 00min", order: 5, status: "locked" },
   { id: "m8-6", courseId: "c8", title: "Cases TBO — Aplicação Real", duration: "2h 00min", order: 6, status: "locked" },
-]
+];
+
+// ─── Módulos adicionais (opcionais) ─────────────────────────────
+
+export const OPTIONAL_MODULES = [
+  "Tráfego Pago",
+  "Marketing Offline",
+  "Detalhamento de Projetos",
+  "Comunicação Visual",
+  "Inteligência Artificial",
+  "Atendimento ao Público",
+  "Plantão de Vendas (Experiências Sensoriais)",
+  "Do Início até a Entrega",
+  "Render 3D",
+  "Audiovisual para Corretores",
+  "Audiovisual para Arquitetos",
+  "Branding Institucional",
+] as const;
 
 // ─── Trilhas de Aprendizado ─────────────────────────────────────
 
@@ -221,8 +395,7 @@ export const MOCK_LEARNING_PATHS: LearningPath[] = [
   {
     id: "lp1",
     title: "Mercado Imobiliário — Fundamentos",
-    description:
-      "Do zero ao lançamento: entenda o mercado, os segmentos e as etapas completas de um lançamento.",
+    description: "Do zero ao lançamento: entenda o mercado, os segmentos e as etapas completas de um lançamento.",
     totalCourses: 2,
     completedCourses: 1,
     progress: 85,
@@ -230,8 +403,7 @@ export const MOCK_LEARNING_PATHS: LearningPath[] = [
   {
     id: "lp2",
     title: "Bastidores do Lançamento",
-    description:
-      "Branding, marketing, 3D e audiovisual — as disciplinas que fazem um lançamento vender.",
+    description: "Branding, marketing, 3D e audiovisual — as disciplinas que fazem um lançamento vender.",
     totalCourses: 4,
     completedCourses: 1,
     progress: 40,
@@ -239,13 +411,12 @@ export const MOCK_LEARNING_PATHS: LearningPath[] = [
   {
     id: "lp3",
     title: "Processos e Metodologia",
-    description:
-      "Arquitetura, jurídico, vendas e o framework TBO Core para gestão completa.",
+    description: "Arquitetura, jurídico, vendas e o framework TBO Core para gestão completa.",
     totalCourses: 2,
     completedCourses: 0,
     progress: 25,
   },
-]
+];
 
 // ─── Leaderboard ────────────────────────────────────────────────
 
@@ -255,7 +426,7 @@ export const MOCK_LEADERBOARD: LeaderboardEntry[] = [
   { id: "u3", name: "Mariana Costa", avatar: "MC", points: 1890, rank: 3 },
   { id: "u4", name: "Rafael Torres", avatar: "RT", points: 1650, rank: 4 },
   { id: "u5", name: "Julia Andrade", avatar: "JA", points: 1420, rank: 5 },
-]
+];
 
 // ─── Categorias ─────────────────────────────────────────────────
 
@@ -268,6 +439,6 @@ export const COURSE_CATEGORIES = [
   "Audiovisual",
   "Processos",
   "Metodologia",
-] as const
+] as const;
 
-export type CourseCategory = (typeof COURSE_CATEGORIES)[number]
+export type CourseCategory = (typeof COURSE_CATEGORIES)[number];

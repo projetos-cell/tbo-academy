@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./tbo-ds.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -52,6 +53,28 @@
   --color-academy-lime: var(--academy-lime);
   --color-academy-black: var(--academy-black);
   --color-academy-offwhite: var(--academy-offwhite);
+
+  /* ── TBO Design System — fontes ── */
+  --font-display: var(--tbo-font-display);
+  --font-mono-tbo: var(--tbo-font-mono);
+
+  /* ── TBO Design System — paleta ── */
+  --color-volt: var(--tbo-volt);
+  --color-volt-600: var(--tbo-volt-600);
+  --color-ink: var(--tbo-ink);
+  --color-paper: var(--tbo-paper);
+  --color-paper-off: var(--tbo-paper-off);
+  --color-forest-50: var(--tbo-forest-50);
+  --color-forest-100: var(--tbo-forest-100);
+  --color-forest-200: var(--tbo-forest-200);
+  --color-forest-300: var(--tbo-forest-300);
+  --color-forest-400: var(--tbo-forest-400);
+  --color-forest-500: var(--tbo-forest-500);
+  --color-forest-600: var(--tbo-forest-600);
+  --color-forest-700: var(--tbo-forest-700);
+  --color-forest-800: var(--tbo-forest-800);
+  --color-forest-900: var(--tbo-forest-900);
+  --color-forest-950: var(--tbo-forest-950);
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 

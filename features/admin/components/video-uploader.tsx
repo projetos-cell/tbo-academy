@@ -38,14 +38,14 @@ export function VideoUploader({ value, onChange, onClear }: VideoUploaderProps) 
 
   if (value) {
     return (
-      <div className="bg-muted/40 flex items-center gap-3 rounded-lg border p-3">
-        <IconVideo className="text-muted-foreground size-5 shrink-0" />
-        <span className="text-muted-foreground flex-1 truncate text-xs">{value}</span>
+      <div className="bg-paper-off flex items-center gap-3 rounded-2xl border border-black/[0.06] p-3">
+        <IconVideo className="text-forest-500 size-5 shrink-0" />
+        <span className="flex-1 truncate text-xs text-[var(--tbo-gray-600)]">{value}</span>
         {onClear && (
           <button
             type="button"
             onClick={onClear}
-            className="text-muted-foreground hover:text-destructive shrink-0 transition-colors"
+            className="hover:text-destructive shrink-0 text-[var(--tbo-gray-500)] transition-colors"
           >
             <IconX className="size-4" />
           </button>
@@ -59,32 +59,29 @@ export function VideoUploader({ value, onChange, onClear }: VideoUploaderProps) 
       <div
         {...getRootProps()}
         className={cn(
-          "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 text-center transition-colors",
-          isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-muted/40",
+          "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed p-6 text-center transition-colors",
+          isDragActive ? "border-volt bg-volt/10" : "hover:border-forest-500/50 hover:bg-paper-off border-black/10",
           uploading && "cursor-not-allowed opacity-60",
         )}
       >
         <input {...getInputProps()} />
-        <IconUpload className="text-muted-foreground size-7" />
+        <IconUpload className="size-7 text-[var(--tbo-gray-500)]" />
         <div>
-          <p className="text-sm font-medium">
+          <p className="text-sm font-semibold">
             {isDragActive ? "Solte o vídeo aqui" : "Arraste um vídeo ou clique para selecionar"}
           </p>
-          <p className="text-muted-foreground mt-0.5 text-xs">MP4, MOV, WebM</p>
+          <p className="mt-0.5 text-xs text-[var(--tbo-gray-500)]">MP4, MOV, WebM</p>
         </div>
       </div>
 
       {uploading && (
         <div className="space-y-1">
-          <div className="text-muted-foreground flex justify-between text-xs">
+          <div className="flex justify-between text-xs text-[var(--tbo-gray-500)]">
             <span>Enviando...</span>
-            <span>{progress}%</span>
+            <span className="font-display font-semibold tracking-tight">{progress}%</span>
           </div>
-          <div className="bg-muted h-1.5 overflow-hidden rounded-full">
-            <div
-              className="bg-primary h-full rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
+          <div className="pbar">
+            <span style={{ width: `${progress}%` }} />
           </div>
         </div>
       )}

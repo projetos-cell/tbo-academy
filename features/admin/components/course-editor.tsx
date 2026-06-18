@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { IconArrowLeft, IconPlus, IconLoader2 } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -34,7 +32,7 @@ const STATUS_LABELS: Record<AdminCourse["status"], string> = {
 const STATUS_VARIANTS: Record<AdminCourse["status"], "secondary" | "default" | "destructive"> = {
   draft: "secondary",
   published: "default",
-  archived: "destructive",
+  archived: "secondary",
 };
 
 // Inline editable field
@@ -73,7 +71,7 @@ function InlineField({
   if (editing) {
     return (
       <div className={className}>
-        <Label className="text-muted-foreground text-xs">{label}</Label>
+        <Label className="text-xs font-medium text-[var(--tbo-gray-600)]">{label}</Label>
         <Input
           ref={ref}
           value={draft}
@@ -82,7 +80,7 @@ function InlineField({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           autoFocus
-          className="mt-1"
+          className="mt-1.5 rounded-xl"
         />
       </div>
     );
@@ -90,7 +88,7 @@ function InlineField({
 
   return (
     <div className={className}>
-      <Label className="text-muted-foreground text-xs">{label}</Label>
+      <Label className="text-xs font-medium text-[var(--tbo-gray-600)]">{label}</Label>
       <button
         type="button"
         onClick={() => {
@@ -98,9 +96,9 @@ function InlineField({
           setEditing(true);
           setTimeout(() => ref.current?.focus(), 0);
         }}
-        className="hover:border-border hover:bg-muted/40 mt-1 block w-full truncate rounded-md border border-transparent px-3 py-2 text-left text-sm transition-colors"
+        className="hover:bg-paper-off mt-1.5 block w-full truncate rounded-xl border border-transparent px-3 py-2 text-left text-sm transition-colors hover:border-black/[0.08]"
       >
-        {value || <span className="text-muted-foreground">{placeholder}</span>}
+        {value || <span className="text-[var(--tbo-gray-500)]">{placeholder}</span>}
       </button>
     </div>
   );
@@ -111,7 +109,6 @@ interface CourseEditorProps {
 }
 
 export function CourseEditor({ courseId }: CourseEditorProps) {
-  const router = useRouter();
   const { data: course, isLoading, error } = useAdminCourse(courseId);
   const updateCourse = useUpdateCourse();
   const createModule = useCreateModule();
@@ -158,17 +155,17 @@ export function CourseEditor({ courseId }: CourseEditorProps) {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-8 w-48 rounded-xl" />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
           <div className="space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-32 rounded-lg" />
+              <Skeleton key={i} className="h-32 rounded-2xl" />
             ))}
           </div>
           <div className="space-y-3">
-            <Skeleton className="h-10" />
-            <Skeleton className="h-10" />
-            <Skeleton className="h-10" />
+            <Skeleton className="h-10 rounded-xl" />
+            <Skeleton className="h-10 rounded-xl" />
+            <Skeleton className="h-10 rounded-xl" />
           </div>
         </div>
       </div>
@@ -177,14 +174,17 @@ export function CourseEditor({ courseId }: CourseEditorProps) {
 
   if (error || !course) {
     return (
-      <div className="space-y-3 py-16 text-center">
-        <p className="text-muted-foreground">Curso não encontrado.</p>
-        <Button asChild variant="outline" size="sm">
-          <Link href="/admin/cursos">
-            <IconArrowLeft className="mr-1.5 size-4" />
-            Voltar para Cursos
-          </Link>
-        </Button>
+      <div className="bg-card flex flex-col items-center gap-4 rounded-2xl border border-black/[0.06] py-16 text-center shadow-sm">
+        <p className="text-[var(--tbo-gray-500)]">Curso não encontrado.</p>
+        <Link
+          href="/admin/cursos"
+          className="bg-forest-900 hover:bg-ink inline-flex items-center gap-2 rounded-full py-2 pr-2 pl-4 text-sm font-bold text-white transition-all hover:-translate-y-px"
+        >
+          Voltar para Cursos
+          <span className="bg-volt text-ink grid size-6 place-items-center rounded-full">
+            <IconArrowLeft className="size-3.5" />
+          </span>
+        </Link>
       </div>
     );
   }
@@ -204,19 +204,22 @@ export function CourseEditor({ courseId }: CourseEditorProps) {
     <div className="space-y-6">
       {/* Top bar */}
       <div className="flex items-center gap-3">
-        <Button asChild variant="ghost" size="icon" className="shrink-0">
-          <Link href="/admin/cursos">
-            <IconArrowLeft className="size-4" />
-          </Link>
-        </Button>
+        <Link
+          href="/admin/cursos"
+          className="text-ink hover:bg-paper-off grid size-9 shrink-0 place-items-center rounded-full border border-black/[0.08] transition-colors"
+          aria-label="Voltar para Cursos"
+        >
+          <IconArrowLeft className="size-4" />
+        </Link>
 
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-xl font-bold">{course.title}</h1>
-          <div className="mt-0.5 flex items-center gap-2">
-            <Badge variant={STATUS_VARIANTS[course.status]} className="px-1.5 py-0 text-[10px]">
+          <span className="text-forest-500 text-[11px] font-bold tracking-[0.14em] uppercase">Editar curso</span>
+          <h1 className="font-display mt-0.5 truncate text-xl font-bold tracking-tight">{course.title}</h1>
+          <div className="mt-1 flex items-center gap-2">
+            <Badge variant={STATUS_VARIANTS[course.status]} className="px-2 py-0 text-[10px]">
               {STATUS_LABELS[course.status]}
             </Badge>
-            <span className="text-muted-foreground text-xs">
+            <span className="text-xs text-[var(--tbo-gray-500)]">
               {modules.length} módulo{modules.length !== 1 ? "s" : ""} ·{" "}
               {modules.reduce((acc, m) => acc + (m.lessons?.length ?? 0), 0)} aulas
             </span>
@@ -230,15 +233,21 @@ export function CourseEditor({ courseId }: CourseEditorProps) {
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_320px]">
         {/* Left: Modules */}
         <div className="space-y-3">
-          <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">Módulos</h2>
+          <div>
+            <span className="text-forest-500 text-[11px] font-bold tracking-[0.14em] uppercase">Conteúdo</span>
+            <h2 className="font-display text-lg font-bold tracking-tight">Módulos</h2>
+          </div>
 
           {modules.length === 0 && !addingModule && (
-            <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed p-10 text-center">
-              <p className="text-muted-foreground text-sm">Nenhum módulo ainda.</p>
-              <Button size="sm" onClick={() => setAddingModule(true)}>
-                <IconPlus className="mr-1 size-3.5" />
+            <div className="bg-paper-off flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-black/[0.12] p-10 text-center">
+              <p className="text-sm text-[var(--tbo-gray-500)]">Nenhum módulo ainda.</p>
+              <button
+                onClick={() => setAddingModule(true)}
+                className="bg-forest-900 hover:bg-ink inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold text-white transition-all hover:-translate-y-px"
+              >
+                <IconPlus className="size-3.5" />
                 Adicionar Módulo
-              </Button>
+              </button>
             </div>
           )}
 
@@ -263,6 +272,7 @@ export function CourseEditor({ courseId }: CourseEditorProps) {
                 onChange={(e) => setNewModuleTitle(e.target.value)}
                 placeholder="Título do módulo..."
                 autoFocus
+                className="rounded-xl"
                 onKeyDown={(e) => {
                   if (e.key === "Escape") {
                     setAddingModule(false);
@@ -270,39 +280,43 @@ export function CourseEditor({ courseId }: CourseEditorProps) {
                   }
                 }}
               />
-              <Button type="submit" size="sm" disabled={!newModuleTitle.trim() || createModule.isPending}>
+              <button
+                type="submit"
+                disabled={!newModuleTitle.trim() || createModule.isPending}
+                className="bg-volt text-ink inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold transition-all hover:-translate-y-px disabled:pointer-events-none disabled:opacity-50"
+              >
                 {createModule.isPending ? <IconLoader2 className="size-4 animate-spin" /> : "Criar"}
-              </Button>
-              <Button
+              </button>
+              <button
                 type="button"
-                size="sm"
-                variant="ghost"
                 onClick={() => {
                   setAddingModule(false);
                   setNewModuleTitle("");
                 }}
+                className="hover:bg-paper-off hover:text-ink shrink-0 rounded-full px-3 py-2 text-sm font-medium text-[var(--tbo-gray-600)] transition-colors"
               >
                 Cancelar
-              </Button>
+              </button>
             </form>
           ) : (
             modules.length > 0 && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-muted-foreground hover:text-foreground w-full gap-1.5"
+              <button
                 onClick={() => setAddingModule(true)}
+                className="hover:bg-paper-off hover:text-ink flex w-full items-center justify-center gap-1.5 rounded-full border border-black/[0.08] py-2.5 text-sm font-semibold text-[var(--tbo-gray-600)] transition-colors hover:border-black/[0.16]"
               >
                 <IconPlus className="size-3.5" />
                 Adicionar Módulo
-              </Button>
+              </button>
             )
           )}
         </div>
 
         {/* Right: Metadata */}
-        <div className="bg-card space-y-4 rounded-xl border p-4">
-          <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">Informações</h2>
+        <div className="bg-card space-y-4 rounded-2xl border border-black/[0.06] p-5 shadow-sm">
+          <div>
+            <span className="text-forest-500 text-[11px] font-bold tracking-[0.14em] uppercase">Detalhes</span>
+            <h2 className="font-display text-lg font-bold tracking-tight">Informações</h2>
+          </div>
 
           <InlineField
             label="Título"
@@ -333,9 +347,9 @@ export function CourseEditor({ courseId }: CourseEditorProps) {
           />
 
           <div>
-            <Label className="text-muted-foreground text-xs">Nível</Label>
+            <Label className="text-xs font-medium text-[var(--tbo-gray-600)]">Nível</Label>
             <Select value={course.level ?? ""} onValueChange={handleLevelChange}>
-              <SelectTrigger className="mt-1">
+              <SelectTrigger className="mt-1.5 rounded-xl">
                 <SelectValue placeholder="Selecione o nível" />
               </SelectTrigger>
               <SelectContent>
@@ -349,22 +363,25 @@ export function CourseEditor({ courseId }: CourseEditorProps) {
           </div>
 
           <div>
-            <Label className="text-muted-foreground text-xs">Tags</Label>
-            <div className="mt-1 flex min-h-[36px] flex-wrap gap-1.5 rounded-md border px-3 py-2">
+            <Label className="text-xs font-medium text-[var(--tbo-gray-600)]">Tags</Label>
+            <div className="mt-1.5 flex min-h-[38px] flex-wrap gap-1.5 rounded-xl border border-black/[0.08] px-3 py-2">
               {(course.tags ?? []).length === 0 ? (
-                <span className="text-muted-foreground text-xs">Sem tags</span>
+                <span className="text-xs text-[var(--tbo-gray-500)]">Sem tags</span>
               ) : (
                 (course.tags ?? []).map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
+                  <span
+                    key={tag}
+                    className="text-forest-700 bg-paper-off rounded-full border border-black/[0.06] px-2.5 py-0.5 text-[11px] font-semibold"
+                  >
                     {tag}
-                  </Badge>
+                  </span>
                 ))
               )}
             </div>
           </div>
 
           {updateCourse.isPending && (
-            <p className="text-muted-foreground flex items-center gap-1 text-xs">
+            <p className="text-forest-600 flex items-center gap-1.5 text-xs font-medium">
               <IconLoader2 className="size-3 animate-spin" />
               Salvando...
             </p>

@@ -56,6 +56,7 @@ export default function TrilhasPage() {
     return (
       <div className="space-y-8">
         <PageHeader
+          eyebrow="Trilhas"
           title="Trilhas de Aprendizado"
           description="Caminhos estruturados para desenvolver competências completas"
         />
@@ -81,7 +82,7 @@ export default function TrilhasPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <IconRoute className="size-5 text-[#BAF241]" />
-                    <h2 className="text-lg font-semibold">{path.title}</h2>
+                    <h2 className="font-display text-xl font-bold tracking-tight">{path.title}</h2>
                   </div>
                   <p className="text-muted-foreground max-w-lg text-sm">{path.description}</p>
                   <div className="flex items-center gap-4 pt-1">
@@ -96,7 +97,7 @@ export default function TrilhasPage() {
                   </div>
                 </div>
                 <div className="shrink-0 text-right">
-                  <p className="text-2xl font-bold">{path.progress}%</p>
+                  <p className="font-display text-2xl font-bold">{path.progress}%</p>
                   <Progress value={path.progress} className="mt-1 h-2 w-32" />
                 </div>
               </div>

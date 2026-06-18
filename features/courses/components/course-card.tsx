@@ -13,12 +13,9 @@ import {
   IconClock,
   IconBooks,
   IconLock,
+  IconArrowRight,
 } from "@tabler/icons-react";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { usePreviewStore } from "@/features/diagnostico/stores/preview-store";
 import { cn } from "@/lib/utils";
 import type { Course } from "../types";
@@ -28,41 +25,32 @@ interface CourseCardProps {
   basePath?: string;
 }
 
-const CATEGORY_CONFIG: Record<string, { icon: React.ElementType; gradient: string }> = {
-  Introdução: { icon: IconBook2, gradient: "from-black to-zinc-800" },
-  Lançamento: { icon: IconRocket, gradient: "from-[#BAF241] to-emerald-500" },
-  Branding: { icon: IconBulb, gradient: "from-amber-500 to-orange-500" },
-  Marketing: { icon: IconSpeakerphone, gradient: "from-blue-500 to-cyan-600" },
-  "Digital 3D": { icon: IconCube, gradient: "from-violet-500 to-purple-600" },
-  Audiovisual: { icon: IconMovie, gradient: "from-rose-500 to-pink-600" },
-  Processos: { icon: IconSettings, gradient: "from-slate-600 to-zinc-700" },
-  Metodologia: { icon: IconDiamond, gradient: "from-black to-[#BAF241]" },
+const CATEGORY_ICONS: Record<string, React.ElementType> = {
+  Introdução: IconBook2,
+  Lançamento: IconRocket,
+  Branding: IconBulb,
+  Marketing: IconSpeakerphone,
+  "Digital 3D": IconCube,
+  Audiovisual: IconMovie,
+  Processos: IconSettings,
+  Metodologia: IconDiamond,
 };
 
 const LEVEL_LABELS: Record<string, string> = {
   iniciante: "Iniciante",
-  intermediario: "Intermediario",
-  avancado: "Avancado",
+  intermediario: "Intermediário",
+  avancado: "Avançado",
 };
 
-const LEVEL_VARIANTS: Record<string, "default" | "secondary" | "outline"> = {
-  iniciante: "secondary",
-  intermediario: "default",
-  avancado: "outline",
-};
-
-export function CourseCard({ course, basePath = "/academy/cursos" }: CourseCardProps) {
+export function CourseCard({ course, basePath = "/cursos" }: CourseCardProps) {
   const isPreview = usePreviewStore((s) => s.isPreview);
   const openPricing = usePreviewStore((s) => s.openPricing);
 
-  const config = CATEGORY_CONFIG[course.category] ?? {
-    icon: IconBooks,
-    gradient: "from-gray-500 to-gray-600",
-  };
-  const Icon = config.icon;
+  const Icon = CATEGORY_ICONS[course.category] ?? IconBooks;
 
   const buttonLabel =
     course.status === "concluido" ? "Revisar" : course.status === "em_andamento" ? "Continuar" : "Iniciar";
+  const isReview = course.status === "concluido";
 
   const handleLockedClick = (e: React.MouseEvent) => {
     if (isPreview) {
@@ -72,7 +60,7 @@ export function CourseCard({ course, basePath = "/academy/cursos" }: CourseCardP
   };
 
   return (
-    <Card className="group relative gap-0 overflow-hidden py-0">
+    <div className="group bg-card relative flex flex-col overflow-hidden rounded-[18px] border border-black/[0.06] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(11,11,11,0.10)]">
       {/* Lock overlay for preview mode */}
       {isPreview && (
         <button
@@ -80,86 +68,97 @@ export function CourseCard({ course, basePath = "/academy/cursos" }: CourseCardP
           className="absolute inset-0 z-10 flex cursor-pointer items-center justify-center bg-black/0 opacity-0 transition-all duration-200 group-hover:bg-black/40 group-hover:opacity-100"
         >
           <div className="flex flex-col items-center gap-1.5 rounded-2xl bg-black/80 px-5 py-3 backdrop-blur-md">
-            <IconLock className="size-5 text-[#BAF241]" />
+            <IconLock className="text-volt size-5" />
             <span className="text-[9px] font-bold tracking-[1px] text-white uppercase">Desbloquear</span>
           </div>
         </button>
       )}
 
-      {/* Thumbnail */}
-      <div className={`h-36 bg-gradient-to-br ${config.gradient} relative flex items-center justify-center`}>
-        <Icon className="size-14 text-white/90" />
-        <Badge className="absolute top-3 left-3 rounded-full border-0 bg-black/70 px-2.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
+      {/* Thumbnail — forest treatment do DS */}
+      <div className="img-dark relative flex aspect-[16/10] items-center justify-center">
+        <Icon className="text-volt/90 size-12" strokeWidth={1.5} />
+        <span className="absolute top-3 left-3 rounded-full border border-white/25 bg-black/40 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
           {course.category}
-        </Badge>
+        </span>
         {isPreview && (
-          <div className="absolute top-2 right-2">
+          <div className="absolute top-3 right-3">
             <IconLock className="size-4 text-white/60" />
           </div>
         )}
       </div>
 
-      <CardContent className="space-y-3 p-4">
-        <div>
-          <h3 className="line-clamp-2 text-sm leading-tight font-semibold">{course.title}</h3>
-          <p className="text-muted-foreground mt-1 text-xs">{course.instructor}</p>
-        </div>
+      <div className="flex flex-1 flex-col p-4">
+        <h3 className="font-display line-clamp-2 text-[17px] leading-tight font-bold tracking-tight">{course.title}</h3>
+        <p className="mt-1 text-xs text-[var(--tbo-gray-500)]">{course.instructor}</p>
 
-        {/* Progress */}
-        <div className="space-y-1">
+        {/* Progress — barra volt do DS */}
+        <div className="mt-3 space-y-1">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-muted-foreground">Progresso</span>
-            <span className="font-medium">{course.progress}%</span>
+            <span className="text-[var(--tbo-gray-500)]">Progresso</span>
+            <span className="font-semibold">{course.progress}%</span>
           </div>
-          <Progress value={course.progress} className="h-1.5" />
+          <div className="pbar">
+            <span style={{ width: `${course.progress}%` }} />
+          </div>
         </div>
 
         {/* Meta info */}
-        <div className="text-muted-foreground flex items-center gap-3 text-xs">
+        <div className="mt-3 flex items-center gap-3 text-xs text-[var(--tbo-gray-500)]">
           <span className="flex items-center gap-1">
             <IconClock className="size-3" />
             {course.duration}
           </span>
           <span className="flex items-center gap-1">
             <IconBooks className="size-3" />
-            {course.completedModules}/{course.totalModules} modulos
+            {course.completedModules}/{course.totalModules} aulas
           </span>
         </div>
 
         {/* Rating + Level */}
-        <div className="flex items-center justify-between">
+        <div className="mt-3 mb-4 flex items-center justify-between">
           <span className="flex items-center gap-1 text-xs">
             <IconStar className="size-3.5 fill-amber-500 text-amber-500" />
-            <span className="font-medium">{course.rating}</span>
-            <span className="text-muted-foreground">({course.students})</span>
+            <span className="font-semibold">{course.rating}</span>
+            <span className="text-[var(--tbo-gray-500)]">({course.students})</span>
           </span>
-          <Badge variant={LEVEL_VARIANTS[course.level]}>{LEVEL_LABELS[course.level]}</Badge>
+          <span className="text-forest-700 bg-paper-off rounded-full border border-black/[0.06] px-2.5 py-0.5 text-[11px] font-semibold">
+            {LEVEL_LABELS[course.level]}
+          </span>
         </div>
 
-        {isPreview ? (
-          <Button
-            size="sm"
-            className="w-full rounded-xl bg-black font-semibold text-[#BAF241] transition-all hover:bg-black/90"
-            onClick={handleLockedClick}
-          >
-            <IconLock className="mr-1 size-3" />
-            Desbloquear curso
-          </Button>
-        ) : (
-          <Button
-            size="sm"
-            className={cn(
-              "w-full rounded-xl font-semibold transition-all",
-              course.status === "concluido"
-                ? "border border-black/10 bg-transparent text-black hover:bg-black/5"
-                : "bg-[#BAF241] text-black hover:bg-[#a8e030] hover:shadow-[0_4px_16px_rgba(186,242,65,0.3)]",
-            )}
-            asChild
-          >
-            <Link href={`${basePath}/${course.id}`}>{buttonLabel}</Link>
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+        {/* CTA — pill do DS */}
+        <div className="mt-auto">
+          {isPreview ? (
+            <button
+              onClick={handleLockedClick}
+              className="bg-ink text-volt flex w-full items-center justify-center gap-2 rounded-full py-2.5 text-sm font-bold transition-all hover:-translate-y-px"
+            >
+              <IconLock className="size-3.5" />
+              Desbloquear curso
+            </button>
+          ) : (
+            <Link
+              href={`${basePath}/${course.id}`}
+              className={cn(
+                "flex w-full items-center justify-between rounded-full py-2.5 pr-2.5 pl-5 text-sm font-bold transition-all hover:-translate-y-px",
+                isReview
+                  ? "text-ink border border-black/10 bg-transparent hover:bg-black/[0.04]"
+                  : "bg-forest-900 hover:bg-ink text-white",
+              )}
+            >
+              {buttonLabel}
+              <span
+                className={cn(
+                  "grid size-7 place-items-center rounded-full",
+                  isReview ? "bg-ink text-volt" : "bg-volt text-ink",
+                )}
+              >
+                <IconArrowRight className="size-4" />
+              </span>
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

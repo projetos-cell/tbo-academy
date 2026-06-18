@@ -1,68 +1,50 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useMemo } from "react"
-import { useParams } from "next/navigation"
-import Link from "next/link"
-import { MOCK_COURSES, MOCK_MODULES } from "@/features/courses/data/mock-courses"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { EmptyState } from "@/components/shared"
+import { useState, useEffect, useMemo } from "react";
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import { MOCK_COURSES, MOCK_MODULES, OPTIONAL_MODULES } from "@/features/courses/data/mock-courses";
+import { EmptyState } from "@/components/shared";
 import {
   IconSchool,
   IconArrowLeft,
-  IconBook2,
+  IconArrowRight,
   IconCircleCheck,
   IconPlayerPlay,
   IconLock,
   IconClock,
-} from "@tabler/icons-react"
-import { cn } from "@/lib/utils"
-import { ContentGate } from "@/features/academy/components/content-gate"
-import { CourseVideoPlayer } from "@/features/courses/components/course-video-player"
-import { usePreviewStore } from "@/features/diagnostico/stores/preview-store"
-import { usePreviewSession } from "@/features/academy/hooks/use-preview-session"
-import type { CourseModule } from "@/features/courses/types"
-import { toast } from "sonner"
-import { useCourseProgress } from "@/features/courses/hooks/use-course-progress"
-import { trackCourseStarted, trackModuleCompleted } from "@/lib/analytics"
-
-const CATEGORY_GRADIENTS: Record<string, string> = {
-  "Introdução": "from-black via-zinc-900 to-zinc-800",
-  "Lançamento": "from-emerald-600 via-[#BAF241]/80 to-[#BAF241]/40",
-  Branding: "from-amber-600 via-orange-500 to-amber-400/60",
-  Marketing: "from-blue-700 via-blue-500 to-cyan-400/40",
-  "Digital 3D": "from-violet-700 via-purple-500 to-violet-400/40",
-  Audiovisual: "from-rose-700 via-pink-500 to-rose-400/40",
-  Processos: "from-slate-700 via-zinc-600 to-slate-500/40",
-  Metodologia: "from-black via-zinc-900 to-[#BAF241]/20",
-}
+  IconStar,
+} from "@tabler/icons-react";
+import { cn } from "@/lib/utils";
+import { ContentGate } from "@/features/academy/components/content-gate";
+import { CourseVideoPlayer } from "@/features/courses/components/course-video-player";
+import { usePreviewStore } from "@/features/diagnostico/stores/preview-store";
+import { usePreviewSession } from "@/features/academy/hooks/use-preview-session";
+import type { CourseModule } from "@/features/courses/types";
+import { toast } from "sonner";
+import { useCourseProgress } from "@/features/courses/hooks/use-course-progress";
+import { trackCourseStarted, trackModuleCompleted } from "@/lib/analytics";
 
 export default function AcademyCourseDetailPage() {
-  const params = useParams<{ courseId: string }>()
-  const courseId = params.courseId
-  const isPreview = usePreviewStore((s) => s.isPreview)
-  const { isCourseUnlocked, trackCourseExplored } = usePreviewSession()
-  const [selectedModule, setSelectedModule] = useState<CourseModule | null>(null)
-  const { markModuleComplete, markModuleInProgress, isModuleCompleted } = useCourseProgress()
+  const params = useParams<{ courseId: string }>();
+  const courseId = params.courseId;
+  const isPreview = usePreviewStore((s) => s.isPreview);
+  const { isCourseUnlocked, trackCourseExplored } = usePreviewSession();
+  const [selectedModule, setSelectedModule] = useState<CourseModule | null>(null);
+  const { markModuleComplete, markModuleInProgress, isModuleCompleted } = useCourseProgress();
 
-  const course = useMemo(
-    () => MOCK_COURSES.find((c) => c.id === courseId),
-    [courseId]
-  )
+  const course = useMemo(() => MOCK_COURSES.find((c) => c.id === courseId), [courseId]);
 
   const modules = useMemo(
-    () =>
-      MOCK_MODULES.filter((m) => m.courseId === courseId).sort(
-        (a, b) => a.order - b.order
-      ),
-    [courseId]
-  )
+    () => MOCK_MODULES.filter((m) => m.courseId === courseId).sort((a, b) => a.order - b.order),
+    [courseId],
+  );
 
   useEffect(() => {
     if (isPreview && courseId) {
-      trackCourseExplored(courseId)
+      trackCourseExplored(courseId);
     }
-  }, [isPreview, courseId, trackCourseExplored])
+  }, [isPreview, courseId, trackCourseExplored]);
 
   if (!course) {
     return (
@@ -70,89 +52,69 @@ export default function AcademyCourseDetailPage() {
         icon={IconSchool}
         title="Curso não encontrado"
         description="O curso que você está procurando não existe ou foi removido."
-        cta={{ label: "Voltar para Academy", onClick: () => window.history.back() }}
+        cta={{ label: "Voltar para cursos", onClick: () => window.history.back() }}
       />
-    )
+    );
   }
 
-  const gradient = CATEGORY_GRADIENTS[course.category] ?? "from-gray-700 to-gray-500"
-
   const handleModuleClick = (mod: CourseModule) => {
-    if (mod.status === "locked") return
+    if (mod.status === "locked") return;
     if (mod.videoUrl) {
-      setSelectedModule(mod)
-      markModuleInProgress(mod.id)
-      if (course) trackCourseStarted(courseId, course.title)
+      setSelectedModule(mod);
+      markModuleInProgress(mod.id);
+      if (course) trackCourseStarted(courseId, course.title);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       toast.info("Conteúdo em breve", {
         description: `"${mod.title}" será disponibilizado na próxima fase da plataforma.`,
-      })
+      });
     }
-  }
+  };
 
   const handleMarkComplete = (mod: CourseModule) => {
-    markModuleComplete(mod.id)
-    trackModuleCompleted(mod.id, mod.title, courseId)
-    toast.success("Módulo concluído!", {
-      description: `"${mod.title}" marcado como concluído.`,
-    })
-  }
+    markModuleComplete(mod.id);
+    trackModuleCompleted(mod.id, mod.title, courseId);
+    toast.success("Módulo concluído!", { description: `"${mod.title}" marcado como concluído.` });
+  };
+
+  const firstPlayable = modules.find((m) => m.status !== "locked" && m.videoUrl);
 
   return (
     <div className="space-y-8">
       {/* Back link */}
       <Link
         href="/explorar"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
       >
         <IconArrowLeft className="size-4" />
         Voltar para cursos
       </Link>
 
-      {/* Hero */}
-      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient} p-8 md:p-10 min-h-[280px] flex flex-col justify-end`}>
-        <div className="absolute inset-0 bg-black/30" />
-        <div className="absolute -right-10 -top-10 size-48 rounded-full bg-white/5 blur-2xl" />
-
+      {/* Hero forest — DS subhero */}
+      <div className="from-forest-800 to-forest-950 relative flex min-h-[280px] flex-col justify-end overflow-hidden rounded-2xl bg-gradient-to-br p-8 md:p-10">
+        <div
+          className="pointer-events-none absolute -top-16 -right-16 size-72 rounded-full blur-2xl"
+          style={{ background: "radial-gradient(circle, rgba(186,242,65,.16), transparent 62%)" }}
+        />
         <div className="relative z-10 space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
-            {course.title}
-          </h1>
-          <p className="text-white/60 text-sm max-w-2xl leading-relaxed">
-            {course.description}
-          </p>
-          <div className="flex flex-wrap items-center gap-2.5 pt-1">
-            <Badge className="bg-white/10 text-white border-0 backdrop-blur-sm gap-1.5 rounded-full px-3 py-1">
-              <IconBook2 className="size-3.5" />
-              {course.totalModules} aulas
-            </Badge>
-            <Badge className="bg-white/10 text-white border-0 backdrop-blur-sm gap-1.5 rounded-full px-3 py-1">
-              <IconCircleCheck className="size-3.5" />
-              {course.completedModules} concluídas
-            </Badge>
-            <Badge
-              className={cn(
-                "border-0 backdrop-blur-sm rounded-full px-3 py-1",
-                course.progress === 100
-                  ? "bg-[#BAF241]/20 text-[#BAF241]"
-                  : course.progress > 0
-                    ? "bg-white/10 text-white"
-                    : "bg-white/10 text-white/60"
-              )}
-            >
-              {course.progress}% completo
-            </Badge>
+          <span className="text-volt text-xs font-bold tracking-[0.14em] uppercase">{course.category}</span>
+          <h1 className="font-display text-3xl font-bold tracking-tight text-white md:text-4xl">{course.title}</h1>
+          <p className="max-w-2xl text-sm leading-relaxed text-white/70">{course.description}</p>
+          <div className="flex flex-wrap items-center gap-2.5 pt-1 text-[13px] text-white/90">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 backdrop-blur-sm">
+              <IconClock className="size-3.5" /> {course.duration}
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 backdrop-blur-sm">
+              <IconPlayerPlay className="size-3.5" /> {course.totalModules} aulas
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 backdrop-blur-sm">
+              <IconCircleCheck className="size-3.5" /> {course.completedModules} concluídas
+            </span>
+            <span className="border-volt/40 text-volt inline-flex items-center gap-1.5 rounded-full border bg-white/5 px-3 py-1 backdrop-blur-sm">
+              <IconStar className="size-3.5" /> {course.rating}
+            </span>
           </div>
         </div>
-      </div>
-
-      {/* Progress bar */}
-      <div className="rounded-2xl bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)]">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-sm text-muted-foreground">Seu progresso no curso</p>
-          <span className="text-sm font-bold">{course.progress}%</span>
-        </div>
-        <Progress value={course.progress} className="h-2" />
       </div>
 
       {/* Video player */}
@@ -164,115 +126,146 @@ export default function AcademyCourseDetailPage() {
         />
       )}
 
-      {/* Modules grid */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold tracking-tight">Módulos</h2>
+      <div className="grid gap-8 lg:grid-cols-[1.6fr_1fr]">
+        {/* ── Conteúdo do curso ── */}
+        <div>
+          <span className="text-forest-500 text-xs font-bold tracking-[0.14em] uppercase">Conteúdo do curso</span>
+          <h2 className="font-display mt-2 mb-5 text-2xl font-bold tracking-tight">Módulos e aulas</h2>
 
-        <ContentGate
-          label="Acesse os módulos do curso"
-          courseId={courseId}
-          previewLevel={isPreview && isCourseUnlocked(courseId) ? "full" : "none"}
-        >
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {modules.map((mod) => {
-              const isLocked = mod.status === "locked"
-              const dbCompleted = isModuleCompleted(mod.id)
-              const isCompleted = dbCompleted || mod.status === "completed"
-              const isInProgress = !isCompleted && mod.status === "in_progress"
+          <ContentGate
+            label="Acesse os módulos do curso"
+            courseId={courseId}
+            previewLevel={isPreview && isCourseUnlocked(courseId) ? "full" : "none"}
+          >
+            <div className="bg-card overflow-hidden rounded-2xl border border-black/[0.06] shadow-sm">
+              {modules.map((mod, i) => {
+                const isLocked = mod.status === "locked";
+                const dbCompleted = isModuleCompleted(mod.id);
+                const isCompleted = dbCompleted || mod.status === "completed";
+                const isInProgress = !isCompleted && mod.status === "in_progress";
 
-              return (
-                <button
-                  key={mod.id}
-                  onClick={() => handleModuleClick(mod)}
-                  disabled={isLocked}
-                  className={cn(
-                    "group relative overflow-hidden rounded-2xl text-left transition-all duration-300",
-                    isLocked
-                      ? "cursor-not-allowed opacity-60"
-                      : "hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] cursor-pointer"
-                  )}
-                >
-                  {/* Thumbnail */}
-                  <div className={`relative aspect-[4/3] bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
-                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
-
-                    {isLocked && (
-                      <div className="absolute top-3 right-3 z-10">
-                        <div className="flex size-8 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm">
-                          <IconLock className="size-4 text-white/60" />
-                        </div>
-                      </div>
+                return (
+                  <button
+                    key={mod.id}
+                    onClick={() => handleModuleClick(mod)}
+                    disabled={isLocked}
+                    className={cn(
+                      "flex w-full items-center gap-4 border-b border-black/[0.05] px-5 py-4 text-left transition-colors last:border-b-0",
+                      isLocked ? "cursor-not-allowed opacity-55" : "hover:bg-paper-off cursor-pointer",
                     )}
-
-                    <Badge className="absolute top-3 left-3 z-10 bg-black/40 text-white border-0 backdrop-blur-sm text-[10px] font-semibold rounded-md px-2">
-                      Módulo {mod.order}
-                    </Badge>
-
-                    {(isCompleted || isInProgress) && (
-                      <div className="absolute bottom-3 right-3 z-10">
-                        <div className={cn(
-                          "flex size-6 items-center justify-center rounded-full",
-                          isCompleted ? "bg-[#BAF241]" : "bg-white/20 backdrop-blur-sm"
-                        )}>
-                          {isCompleted ? (
-                            <IconCircleCheck className="size-4 text-black" />
-                          ) : (
-                            <IconPlayerPlay className="size-3.5 text-white fill-white" />
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    <p className="relative z-10 text-center text-white/80 text-xs font-bold uppercase tracking-wider px-4 leading-tight">
-                      {mod.title.length > 30 ? mod.title.substring(0, 30) + "..." : mod.title}
-                    </p>
-                  </div>
-
-                  {/* Info */}
-                  <div className="p-3 bg-white">
-                    <p className="text-sm font-semibold text-black truncate">
-                      {mod.title}
-                    </p>
-                    <div className="flex items-center justify-between gap-2 mt-1">
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <IconClock className="size-3" />
-                        {mod.duration}
-                      </span>
-                      {!isLocked && !isCompleted && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleMarkComplete(mod)
-                          }}
-                          className="text-[10px] font-semibold text-[#BAF241] hover:text-black transition-colors"
-                        >
-                          Concluir
-                        </button>
+                  >
+                    {/* Status icon */}
+                    <span
+                      className={cn(
+                        "grid size-9 flex-none place-items-center rounded-full",
+                        isCompleted
+                          ? "bg-volt text-ink"
+                          : isLocked
+                            ? "bg-muted text-muted-foreground"
+                            : "bg-forest-900 text-volt",
                       )}
-                    </div>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        </ContentGate>
-      </div>
+                    >
+                      {isCompleted ? (
+                        <IconCircleCheck className="size-4" />
+                      ) : isLocked ? (
+                        <IconLock className="size-4" />
+                      ) : (
+                        <IconPlayerPlay className="size-4 fill-current" />
+                      )}
+                    </span>
 
-      {/* Course info cards */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)]">
-          <p className="text-xs text-muted-foreground mb-1">Instrutor</p>
-          <p className="text-sm font-semibold">{course.instructor}</p>
+                    <span className="font-mono-tbo w-7 flex-none text-[13px] text-[var(--tbo-forest-400)]">
+                      {(i + 1 < 10 ? "0" : "") + (i + 1)}
+                    </span>
+
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[15px] font-semibold">{mod.title}</span>
+                      <span className="mt-0.5 flex items-center gap-2 text-xs text-[var(--tbo-gray-500)]">
+                        <IconClock className="size-3" /> {mod.duration}
+                        {isInProgress && <span className="text-forest-500 font-semibold">· em andamento</span>}
+                      </span>
+                    </span>
+
+                    {!isLocked && !isCompleted && (
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleMarkComplete(mod);
+                        }}
+                        className="text-forest-600 hover:text-ink flex-none text-[11px] font-bold uppercase transition-colors"
+                      >
+                        Concluir
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </ContentGate>
+
+          {/* Módulos opcionais */}
+          <div className="mt-10">
+            <span className="text-forest-500 text-xs font-bold tracking-[0.14em] uppercase">
+              Módulos adicionais · opcionais
+            </span>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              {OPTIONAL_MODULES.map((o) => (
+                <span key={o} className="tagpill">
+                  {o}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="rounded-2xl bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)]">
-          <p className="text-xs text-muted-foreground mb-1">Duração total</p>
-          <p className="text-sm font-semibold">{course.duration}</p>
-        </div>
-        <div className="rounded-2xl bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)]">
-          <p className="text-xs text-muted-foreground mb-1">Nível</p>
-          <p className="text-sm font-semibold capitalize">{course.level}</p>
-        </div>
+
+        {/* ── Aside: matrícula / progresso ── */}
+        <aside className="lg:sticky lg:top-6 lg:self-start">
+          <div className="bg-card rounded-2xl border border-black/[0.06] p-6 shadow-sm">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-forest-500 text-xs font-bold tracking-[0.14em] uppercase">Seu progresso</span>
+              <span className="text-lg font-bold">{course.progress}%</span>
+            </div>
+            <div className="pbar">
+              <span style={{ width: `${course.progress}%` }} />
+            </div>
+
+            {firstPlayable && (
+              <button
+                onClick={() => handleModuleClick(firstPlayable)}
+                className="bg-forest-900 hover:bg-ink mt-5 flex w-full items-center justify-between rounded-full py-3 pr-3 pl-5 text-sm font-bold text-white transition-all hover:-translate-y-px"
+              >
+                {course.status === "em_andamento" ? "Continuar de onde parou" : "Começar agora"}
+                <span className="bg-volt text-ink grid size-7 place-items-center rounded-full">
+                  <IconArrowRight className="size-4" />
+                </span>
+              </button>
+            )}
+
+            <hr className="my-6 border-black/[0.06]" />
+
+            <dl className="space-y-3 text-sm">
+              <div className="flex justify-between">
+                <dt className="text-[var(--tbo-gray-500)]">Instrutor</dt>
+                <dd className="font-semibold">{course.instructor}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt className="text-[var(--tbo-gray-500)]">Duração</dt>
+                <dd className="font-semibold">{course.duration}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt className="text-[var(--tbo-gray-500)]">Aulas</dt>
+                <dd className="font-semibold">{course.totalModules}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt className="text-[var(--tbo-gray-500)]">Nível</dt>
+                <dd className="font-semibold capitalize">{course.level}</dd>
+              </div>
+            </dl>
+          </div>
+        </aside>
       </div>
     </div>
-  )
+  );
 }

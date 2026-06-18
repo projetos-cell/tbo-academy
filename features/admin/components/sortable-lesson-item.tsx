@@ -25,28 +25,32 @@ export function SortableLessonItem({ lesson, onEdit }: SortableLessonItemProps) 
     <li
       ref={setNodeRef}
       style={style}
-      className="group/lesson hover:bg-muted/40 flex items-center gap-2 px-3 py-2 transition-colors"
+      className="group/lesson hover:bg-paper-off flex items-center gap-2 px-3 py-2 transition-colors"
     >
       <button
         type="button"
-        className="text-muted-foreground/40 hover:text-muted-foreground shrink-0 cursor-grab touch-none transition-colors"
+        className="hover:text-ink shrink-0 cursor-grab touch-none text-[var(--tbo-gray-500)]/40 transition-colors"
         {...attributes}
         {...listeners}
       >
         <IconGripVertical className="size-3.5" />
       </button>
-      <IconVideo className="text-muted-foreground/60 size-3.5 shrink-0" />
+      <IconVideo className="text-forest-500/70 size-3.5 shrink-0" />
       <span className="flex-1 truncate text-sm">{lesson.title}</span>
 
       {lesson.is_free ? (
-        <IconLockOpen className="size-3.5 shrink-0 text-green-500" title="Aula gratuita" />
+        <IconLockOpen className="text-forest-600 size-3.5 shrink-0" title="Aula gratuita" />
       ) : (
-        <IconLock className="text-muted-foreground/40 size-3.5 shrink-0" title="Aula restrita" />
+        <IconLock className="size-3.5 shrink-0 text-[var(--tbo-gray-500)]/40" title="Aula restrita" />
       )}
 
       <Badge
-        variant={lesson.status === "published" ? "default" : "secondary"}
-        className="shrink-0 px-1.5 py-0 text-[10px]"
+        variant="outline"
+        className={
+          lesson.status === "published"
+            ? "bg-volt text-ink shrink-0 border-0 px-1.5 py-0 text-[10px] font-bold"
+            : "bg-paper-off shrink-0 border border-black/[0.06] px-1.5 py-0 text-[10px] font-semibold text-[var(--tbo-gray-600)]"
+        }
       >
         {lesson.status === "published" ? "Publicada" : "Rascunho"}
       </Badge>

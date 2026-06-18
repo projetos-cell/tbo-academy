@@ -54,50 +54,54 @@ export function CommentCard({ comment, selected, onSelect }: CommentCardProps) {
   return (
     <div
       className={cn(
-        "bg-card space-y-3 rounded-lg border p-4 transition-colors",
-        selected && "border-primary bg-primary/5",
+        "bg-card space-y-3 rounded-2xl border border-black/[0.06] p-4 shadow-sm transition-all",
+        selected && "border-volt ring-volt/40 ring-2",
       )}
     >
       {/* Header */}
       <div className="flex items-start gap-3">
         {onSelect && (
-          <input type="checkbox" checked={selected} onChange={() => onSelect(comment.id)} className="mt-1 rounded" />
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={() => onSelect(comment.id)}
+            className="accent-volt mt-1 size-4 rounded"
+          />
         )}
 
-        {/* Avatar */}
-        <div className="bg-muted flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-medium">
+        {/* Avatar — forest/volt do DS */}
+        <div className="bg-forest-900 text-volt flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-bold">
           {comment.user?.avatar_url ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={comment.user.avatar_url} alt={authorName} className="size-8 rounded-full object-cover" />
+            <img src={comment.user.avatar_url} alt={authorName} className="size-9 rounded-full object-cover" />
           ) : initials ? (
             initials
           ) : (
-            <IconUser className="text-muted-foreground size-4" />
+            <IconUser className="size-4" />
           )}
         </div>
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-medium">{authorName}</span>
+            <span className="text-sm font-semibold">{authorName}</span>
             <Badge variant={STATUS_VARIANTS[comment.status]} className="px-1.5 py-0 text-[10px]">
               {STATUS_LABELS[comment.status]}
             </Badge>
           </div>
-          {location && <p className="text-muted-foreground mt-0.5 truncate text-xs">{location}</p>}
-          <p className="text-muted-foreground text-xs">{new Date(comment.created_at).toLocaleString("pt-BR")}</p>
+          {location && <p className="mt-0.5 truncate text-xs text-[var(--tbo-gray-500)]">{location}</p>}
+          <p className="text-xs text-[var(--tbo-gray-500)]">{new Date(comment.created_at).toLocaleString("pt-BR")}</p>
         </div>
       </div>
 
       {/* Body */}
-      <p className="pl-11 text-sm leading-relaxed">{comment.body}</p>
+      <p className="pl-12 text-sm leading-relaxed">{comment.body}</p>
 
       {/* Actions */}
-      <div className="flex flex-wrap items-center gap-1.5 pl-11">
+      <div className="flex flex-wrap items-center gap-1.5 pl-12">
         {comment.status !== "approved" && (
           <Button
             size="sm"
-            variant="outline"
-            className="h-7 gap-1 border-green-200 text-xs text-green-600 hover:bg-green-50"
+            className="bg-forest-900 hover:bg-ink h-7 gap-1 rounded-full text-xs text-white"
             onClick={() => handleModerate("approved")}
             disabled={moderate.isPending}
           >
@@ -109,7 +113,7 @@ export function CommentCard({ comment, selected, onSelect }: CommentCardProps) {
           <Button
             size="sm"
             variant="outline"
-            className="text-destructive border-destructive/20 hover:bg-destructive/5 h-7 gap-1 text-xs"
+            className="text-destructive border-destructive/20 hover:bg-destructive/5 h-7 gap-1 rounded-full text-xs"
             onClick={() => handleModerate("rejected")}
             disabled={moderate.isPending}
           >
@@ -121,7 +125,7 @@ export function CommentCard({ comment, selected, onSelect }: CommentCardProps) {
           <Button
             size="sm"
             variant="outline"
-            className="h-7 gap-1 border-amber-200 text-xs text-amber-600 hover:bg-amber-50"
+            className="text-forest-700 h-7 gap-1 rounded-full border-black/10 text-xs hover:bg-black/[0.04]"
             onClick={() => handleModerate("flagged")}
             disabled={moderate.isPending}
           >
@@ -133,7 +137,7 @@ export function CommentCard({ comment, selected, onSelect }: CommentCardProps) {
           <Button
             size="sm"
             variant="ghost"
-            className="text-muted-foreground h-7 text-xs"
+            className="h-7 rounded-full text-xs text-[var(--tbo-gray-500)]"
             onClick={() => handleModerate("pending")}
             disabled={moderate.isPending}
           >

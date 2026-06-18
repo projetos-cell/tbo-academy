@@ -41,7 +41,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { WorkspaceSwitcher } from "@/components/layout/workspace-switcher";
+import { TboMark } from "@/components/brand/tbo-logo";
 import { useLogout } from "@/hooks/use-logout";
 import { useAcademyEntitlement } from "@/features/academy/hooks/use-academy-entitlement";
 import { useAuthStore } from "@/stores/auth-store";
@@ -131,6 +131,16 @@ export function AcademySidebar() {
   return (
     <>
       <Sidebar variant="inset">
+        <SidebarHeader className="px-3 pt-3 pb-1">
+          <Link
+            href="/explorar"
+            className="flex items-center gap-2.5 px-1 transition-opacity hover:opacity-80"
+            aria-label="TBO Academy"
+          >
+            <TboMark className="h-7 w-7 text-white" />
+            <span className="font-display text-base font-extrabold tracking-tight text-white">TBO Academy</span>
+          </Link>
+        </SidebarHeader>
         <SidebarContent>
           {/* Preview mode: discovery card */}
           {isPreview ? (

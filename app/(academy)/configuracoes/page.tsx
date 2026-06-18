@@ -1,25 +1,28 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/components/shared/page-header"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { IconBell, IconClock, IconTarget } from "@tabler/icons-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { PageHeader } from "@/components/shared/page-header";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { IconBell, IconClock, IconTarget, IconArrowRight } from "@tabler/icons-react";
 
 export default function AcademyConfiguracoesPage() {
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="max-w-2xl space-y-8">
       <PageHeader
+        eyebrow="Sua experiência"
         title="Preferências"
         description="Configure sua experiência de aprendizado"
       />
 
-      <Card>
+      <Card className="border border-black/[0.06] shadow-sm">
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <IconBell className="size-4" />
+          <span className="text-forest-500 text-xs font-bold tracking-[0.14em] uppercase">Avisos</span>
+          <CardTitle className="font-display flex items-center gap-2.5 text-xl font-bold tracking-tight">
+            <span className="bg-forest-900 text-volt grid size-9 flex-none place-items-center rounded-full">
+              <IconBell className="size-4" />
+            </span>
             Notificações
           </CardTitle>
         </CardHeader>
@@ -27,37 +30,34 @@ export default function AcademyConfiguracoesPage() {
           <div className="flex items-center justify-between">
             <div>
               <Label>Lembrete diário</Label>
-              <p className="text-xs text-muted-foreground">
-                Receba um lembrete para estudar todos os dias
-              </p>
+              <p className="text-xs text-[var(--tbo-gray-500)]">Receba um lembrete para estudar todos os dias</p>
             </div>
-            <Switch defaultChecked />
+            <Switch defaultChecked className="data-[state=checked]:bg-volt" />
           </div>
           <div className="flex items-center justify-between">
             <div>
               <Label>Novos cursos</Label>
-              <p className="text-xs text-muted-foreground">
-                Seja notificado quando novos cursos forem publicados
-              </p>
+              <p className="text-xs text-[var(--tbo-gray-500)]">Seja notificado quando novos cursos forem publicados</p>
             </div>
-            <Switch defaultChecked />
+            <Switch defaultChecked className="data-[state=checked]:bg-volt" />
           </div>
           <div className="flex items-center justify-between">
             <div>
               <Label>Conquistas</Label>
-              <p className="text-xs text-muted-foreground">
-                Notificações de medalhas e certificados
-              </p>
+              <p className="text-xs text-[var(--tbo-gray-500)]">Notificações de medalhas e certificados</p>
             </div>
-            <Switch defaultChecked />
+            <Switch defaultChecked className="data-[state=checked]:bg-volt" />
           </div>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border border-black/[0.06] shadow-sm">
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <IconTarget className="size-4" />
+          <span className="text-forest-500 text-xs font-bold tracking-[0.14em] uppercase">Ritmo</span>
+          <CardTitle className="font-display flex items-center gap-2.5 text-xl font-bold tracking-tight">
+            <span className="bg-forest-900 text-volt grid size-9 flex-none place-items-center rounded-full">
+              <IconTarget className="size-4" />
+            </span>
             Metas de Aprendizado
           </CardTitle>
         </CardHeader>
@@ -93,10 +93,13 @@ export default function AcademyConfiguracoesPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border border-black/[0.06] shadow-sm">
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <IconClock className="size-4" />
+          <span className="text-forest-500 text-xs font-bold tracking-[0.14em] uppercase">Rotina</span>
+          <CardTitle className="font-display flex items-center gap-2.5 text-xl font-bold tracking-tight">
+            <span className="bg-forest-900 text-volt grid size-9 flex-none place-items-center rounded-full">
+              <IconClock className="size-4" />
+            </span>
             Horário Preferido
           </CardTitle>
         </CardHeader>
@@ -117,7 +120,12 @@ export default function AcademyConfiguracoesPage() {
         </CardContent>
       </Card>
 
-      <Button>Salvar Preferências</Button>
+      <button className="bg-forest-900 hover:bg-ink flex items-center justify-between gap-6 rounded-full py-3 pr-3 pl-6 text-sm font-bold text-white transition-all hover:-translate-y-px">
+        Salvar Preferências
+        <span className="bg-volt text-ink grid size-7 place-items-center rounded-full">
+          <IconArrowRight className="size-4" />
+        </span>
+      </button>
     </div>
-  )
+  );
 }

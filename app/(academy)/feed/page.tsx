@@ -109,12 +109,12 @@ const MOCK_FEED: FeedPost[] = [
   },
 ];
 
-const TYPE_CONFIG: Record<FeedItemType, { icon: React.ElementType; color: string }> = {
-  conquista: { icon: IconTrophy, color: "text-amber-500" },
-  conclusao: { icon: IconCertificate, color: "text-emerald-500" },
-  comentario: { icon: IconMessageCircle, color: "text-blue-500" },
-  ranking: { icon: IconFlame, color: "text-orange-500" },
-  novo_curso: { icon: IconBook2, color: "text-[#BAF241]" },
+const TYPE_CONFIG: Record<FeedItemType, { icon: React.ElementType; label: string }> = {
+  conquista: { icon: IconTrophy, label: "Conquista" },
+  conclusao: { icon: IconCertificate, label: "Conclusão" },
+  comentario: { icon: IconMessageCircle, label: "Comentário" },
+  ranking: { icon: IconFlame, label: "Ranking" },
+  novo_curso: { icon: IconBook2, label: "Novo curso" },
 };
 
 function formatTimeAgo(dateStr: string): string {
@@ -135,7 +135,7 @@ export default function FeedPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Feed" description="Acompanhe a atividade da comunidade TBO Academy" />
+      <PageHeader eyebrow="Comunidade" title="Feed" description="Acompanhe a atividade da comunidade TBO Academy" />
 
       <Tabs defaultValue="todos" className="space-y-6">
         <TabsList>
@@ -147,7 +147,7 @@ export default function FeedPage() {
         {isLoading ? (
           <div className="space-y-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-28 rounded-xl" />
+              <Skeleton key={i} className="h-28 rounded-2xl" />
             ))}
           </div>
         ) : (
@@ -201,50 +201,49 @@ function FeedCard({ post, onLike }: { post: FeedPost; onLike: () => void }) {
   const Icon = config.icon;
 
   return (
-    <Card className="overflow-hidden transition-all duration-200 hover:shadow-md">
-      <CardContent className="p-4">
-        <div className="flex gap-3">
+    <Card className="overflow-hidden rounded-2xl border-black/[0.06] shadow-sm transition-all hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(11,11,11,0.10)]">
+      <CardContent className="p-5">
+        <div className="flex gap-4">
           <Avatar className="size-10 shrink-0">
-            <AvatarFallback className="bg-black text-xs font-bold text-[#BAF241]">{post.userInitials}</AvatarFallback>
+            <AvatarFallback className="bg-forest-900 text-volt text-xs font-bold">{post.userInitials}</AvatarFallback>
           </Avatar>
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-semibold">{post.userName}</span>
-              <span className="text-muted-foreground text-xs">{post.userRole}</span>
-              <span className="text-muted-foreground text-xs">·</span>
-              <span className="text-muted-foreground text-xs">{formatTimeAgo(post.createdAt)}</span>
+              <span className="text-xs text-[var(--tbo-gray-500)]">{post.userRole}</span>
+              <span className="text-xs text-[var(--tbo-gray-500)]">·</span>
+              <span className="text-xs text-[var(--tbo-gray-500)]">{formatTimeAgo(post.createdAt)}</span>
+              <span className="bg-paper-off text-forest-700 ml-auto inline-flex items-center gap-1.5 rounded-full border border-black/[0.06] px-2.5 py-0.5 text-[11px] font-semibold">
+                <Icon className="text-forest-500 size-3.5" />
+                {config.label}
+              </span>
             </div>
 
-            <div className="mt-2 flex items-start gap-2">
-              <div className={cn("mt-0.5 shrink-0", config.color)}>
-                <Icon className="size-4" />
-              </div>
-              <div>
-                <p className="text-sm">{post.content}</p>
-                {post.detail && <p className="text-muted-foreground mt-1 text-xs">{post.detail}</p>}
-              </div>
+            <div className="mt-2.5">
+              <p className="text-sm leading-snug font-medium">{post.content}</p>
+              {post.detail && <p className="mt-1 text-xs text-[var(--tbo-gray-500)]">{post.detail}</p>}
             </div>
 
-            <div className="mt-3 flex items-center gap-4">
+            <div className="mt-4 flex items-center gap-5">
               <button
                 onClick={onLike}
                 className={cn(
-                  "flex items-center gap-1 text-xs transition-colors",
-                  post.likedByMe ? "text-red-500" : "text-muted-foreground hover:text-red-500",
+                  "flex items-center gap-1.5 text-xs font-semibold transition-colors",
+                  post.likedByMe ? "text-ink" : "hover:text-ink text-[var(--tbo-gray-500)]",
                 )}
               >
-                <IconHeart className={cn("size-3.5", post.likedByMe && "fill-current")} />
+                <IconHeart className={cn("size-3.5", post.likedByMe && "fill-volt text-ink")} />
                 {post.likesCount}
               </button>
-              <button className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs transition-colors">
+              <button className="hover:text-ink flex items-center gap-1.5 text-xs font-semibold text-[var(--tbo-gray-500)] transition-colors">
                 <IconMessageCircle className="size-3.5" />
                 {post.commentsCount}
               </button>
-              <button className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs transition-colors">
+              <button className="hover:text-ink flex items-center gap-1.5 text-xs font-semibold text-[var(--tbo-gray-500)] transition-colors">
                 <IconShare className="size-3.5" />
               </button>
-              <button className="text-muted-foreground hover:text-foreground ml-auto flex items-center gap-1 text-xs transition-colors">
+              <button className="hover:text-ink ml-auto flex items-center gap-1.5 text-xs font-semibold text-[var(--tbo-gray-500)] transition-colors">
                 <IconBookmark className="size-3.5" />
               </button>
             </div>

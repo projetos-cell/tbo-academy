@@ -51,8 +51,8 @@ export default function ExplorarCursosPage() {
               <IconLibrary className="size-3.5" />
               Sua biblioteca de aprendizado
             </Badge>
-            <h1 className="text-4xl font-bold tracking-tight text-white md:text-5xl">
-              <em className="font-black not-italic">Todos</em> os Cursos
+            <h1 className="font-display text-4xl font-bold tracking-tight text-white md:text-5xl">
+              <em className="text-volt font-black not-italic">Todos</em> os Cursos
             </h1>
             <p className="text-sm text-white/40">{courses.length} cursos disponíveis no Academy Pass</p>
           </div>

@@ -10,7 +10,7 @@ import {
   createColumnHelper,
   type SortingState,
 } from "@tanstack/react-table";
-import { IconSearch, IconBookmark, IconLoader2, IconChevronUp, IconChevronDown } from "@tabler/icons-react";
+import { IconSearch, IconBookmark, IconChevronUp, IconChevronDown } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,10 +28,10 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-  founder: "bg-purple-100 text-purple-700 border-purple-200",
-  diretoria: "bg-blue-100 text-blue-700 border-blue-200",
-  lider: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  colaborador: "bg-gray-100 text-gray-600 border-gray-200",
+  founder: "bg-forest-900 text-volt border-transparent",
+  diretoria: "bg-forest-100 text-forest-700 border-forest-200",
+  lider: "bg-paper-off text-forest-700 border-black/[0.06]",
+  colaborador: "bg-paper-off text-[var(--tbo-gray-500)] border-black/[0.06]",
 };
 
 function UserAvatar({ user }: { user: AdminUser }) {
@@ -47,7 +47,7 @@ function UserAvatar({ user }: { user: AdminUser }) {
   return (
     <Avatar className="size-8">
       <AvatarImage src={user.avatar_url ?? undefined} />
-      <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">{initials}</AvatarFallback>
+      <AvatarFallback className="bg-forest-900 text-volt text-xs font-semibold">{initials}</AvatarFallback>
     </Avatar>
   );
 }
@@ -82,8 +82,8 @@ export function UserTable() {
           <div className="flex items-center gap-3">
             <UserAvatar user={row.original} />
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium">{row.original.full_name ?? "Sem nome"}</p>
-              <p className="text-muted-foreground truncate text-xs">{row.original.email}</p>
+              <p className="truncate text-sm font-semibold">{row.original.full_name ?? "Sem nome"}</p>
+              <p className="truncate text-xs text-[var(--tbo-gray-500)]">{row.original.email}</p>
             </div>
           </div>
         ),
@@ -92,11 +92,13 @@ export function UserTable() {
         header: "Perfil",
         cell: ({ getValue }) => {
           const role = getValue();
-          if (!role) return <span className="text-muted-foreground text-xs">—</span>;
+          if (!role) return <span className="text-xs text-[var(--tbo-gray-500)]">—</span>;
           return (
             <Badge
               variant="outline"
-              className={`text-xs font-medium ${ROLE_COLORS[role] ?? "bg-gray-100 text-gray-600"}`}
+              className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
+                ROLE_COLORS[role] ?? "bg-paper-off border-black/[0.06] text-[var(--tbo-gray-500)]"
+              }`}
             >
               {ROLE_LABELS[role] ?? role}
             </Badge>
@@ -105,14 +107,16 @@ export function UserTable() {
       }),
       columnHelper.accessor("enrollment_count", {
         header: "Cursos",
-        cell: ({ getValue }) => <span className="text-sm tabular-nums">{getValue()}</span>,
+        cell: ({ getValue }) => (
+          <span className="font-display text-sm font-semibold tracking-tight tabular-nums">{getValue()}</span>
+        ),
       }),
       columnHelper.accessor("created_at", {
         header: "Membro desde",
         cell: ({ getValue }) => {
           const date = new Date(getValue());
           return (
-            <span className="text-muted-foreground text-sm">
+            <span className="text-sm text-[var(--tbo-gray-500)]">
               {date.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })}
             </span>
           );
@@ -125,7 +129,7 @@ export function UserTable() {
           <Button
             size="sm"
             variant="ghost"
-            className="text-muted-foreground hover:text-foreground h-7 gap-1 px-2 text-xs"
+            className="text-forest-700 hover:bg-forest-900 h-7 gap-1.5 rounded-full px-3 text-xs font-semibold hover:text-white"
             onClick={() => {
               setSelectedUser(row.original);
               setEnrollmentOpen(true);
@@ -155,33 +159,33 @@ export function UserTable() {
       {/* Search bar */}
       <div className="flex items-center gap-3">
         <div className="relative max-w-sm flex-1">
-          <IconSearch className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+          <IconSearch className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[var(--tbo-gray-500)]" />
           <Input
             placeholder="Buscar por nome..."
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="h-9 pl-9"
+            className="h-9 rounded-full pl-9"
           />
         </div>
-        {!isLoading && <span className="text-muted-foreground text-sm">{total} usuário(s)</span>}
+        {!isLoading && <span className="text-sm text-[var(--tbo-gray-500)]">{total} usuário(s)</span>}
       </div>
 
       {/* Table */}
-      <div className="bg-card overflow-hidden rounded-lg border">
+      <div className="bg-card overflow-hidden rounded-2xl border border-black/[0.06] shadow-sm">
         <table className="w-full">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-muted/30 border-b">
+              <tr key={headerGroup.id} className="border-b border-black/[0.06]">
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="text-muted-foreground px-4 py-3 text-left text-xs font-medium tracking-wide uppercase"
+                    className="px-4 py-3 text-left text-[11px] font-bold tracking-[0.1em] text-[var(--tbo-gray-500)] uppercase"
                   >
                     {header.isPlaceholder ? null : (
                       <button
                         className={`flex items-center gap-1 ${
                           header.column.getCanSort()
-                            ? "hover:text-foreground cursor-pointer transition-colors select-none"
+                            ? "hover:text-ink cursor-pointer transition-colors select-none"
                             : ""
                         }`}
                         onClick={header.column.getToggleSortingHandler()}
@@ -202,7 +206,7 @@ export function UserTable() {
           <tbody>
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i} className="border-b last:border-0">
+                <tr key={i} className="border-b border-black/[0.05] last:border-0">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <Skeleton className="size-8 rounded-full" />
@@ -228,13 +232,16 @@ export function UserTable() {
               ))
             ) : table.getRowModel().rows.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="text-muted-foreground px-4 py-16 text-center text-sm">
+                <td colSpan={columns.length} className="px-4 py-16 text-center text-sm text-[var(--tbo-gray-500)]">
                   Nenhum usuário encontrado.
                 </td>
               </tr>
             ) : (
               table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="hover:bg-muted/30 border-b transition-colors last:border-0">
+                <tr
+                  key={row.id}
+                  className="hover:bg-paper-off border-b border-black/[0.05] transition-colors last:border-0"
+                >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-4 py-3">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
