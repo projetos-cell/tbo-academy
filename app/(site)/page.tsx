@@ -1,6 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteNav } from "@/components/brand/site-nav";
 import { Ph } from "@/components/brand/photo-placeholder";
+
+const HOME_DESCRIPTION =
+  "Para qualquer pessoa que queira entrar, investir e crescer no mercado imobiliário — de quem está começando do zero a analistas, investidores e CEOs. No seu ritmo, com certificado.";
+
+export const metadata: Metadata = {
+  title: "TBO Academy — Educação para o mercado imobiliário",
+  description: HOME_DESCRIPTION,
+  openGraph: {
+    title: "TBO Academy — Educação para o mercado imobiliário",
+    description: HOME_DESCRIPTION,
+  },
+};
 
 const CATALOG = [
   {

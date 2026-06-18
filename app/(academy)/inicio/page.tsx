@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   IconBook2,
   IconFlame,
@@ -15,14 +14,16 @@ import {
   IconArrowRight,
   IconPlayerPlay,
   IconStar,
+  IconRoute,
 } from "@tabler/icons-react";
 import { CourseCard } from "@/features/courses/components/course-card";
 import { LeaderboardCard } from "@/features/courses/components/leaderboard-card";
-import { MOCK_LEADERBOARD } from "@/features/courses/data/mock-courses";
 import { useCourses, useMergedLearningPaths } from "@/features/courses/hooks/use-courses";
+import { useLeaderboard } from "@/features/courses/hooks/use-leaderboard";
 import { usePreviewStore } from "@/features/diagnostico/stores/preview-store";
 import { DiscoveryFeed } from "@/features/academy/components/discovery-feed";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared";
 
 export default function AcademyDashboardPage() {
   const isPreview = usePreviewStore((s) => s.isPreview);
@@ -39,8 +40,15 @@ export default function AcademyDashboardPage() {
 function AuthenticatedDashboard() {
   const { data: courses = [], isLoading } = useCourses();
   const learningPaths = useMergedLearningPaths(courses);
+  const { leaderboard, isLoading: isLeaderboardLoading } = useLeaderboard();
 
   const inProgressCourses = useMemo(() => courses.filter((c) => c.status === "em_andamento"), [courses]);
+  const completedCourses = useMemo(() => courses.filter((c) => c.status === "concluido"), [courses]);
+  const recommendedCourses = useMemo(
+    () => courses.filter((c) => c.status === "nao_iniciado").slice(0, 3),
+    [courses],
+  );
+  const lastAchievement = completedCourses[completedCourses.length - 1];
 
   const totalHours = useMemo(() => {
     const completed = courses.filter((c) => c.status === "concluido");
@@ -160,33 +168,67 @@ function AuthenticatedDashboard() {
             </Button>
           </div>
 
-          {learningPaths.map((path) => (
-            <Card key={path.id}>
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 space-y-1">
-                    <h3 className="font-semibold">{path.title}</h3>
-                    <p className="text-muted-foreground text-sm">{path.description}</p>
-                    <div className="flex items-center gap-4 pt-2">
-                      <span className="text-muted-foreground text-xs">
-                        {path.completedCourses}/{path.totalCourses} cursos
-                      </span>
-                      <Progress value={path.progress} className="h-1.5 max-w-[200px] flex-1" />
-                      <span className="text-xs font-medium">{path.progress}%</span>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href="/trilhas">Continuar</Link>
-                  </Button>
-                </div>
+          {isLoading ? (
+            Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)
+          ) : learningPaths.length === 0 ? (
+            <Card>
+              <CardContent className="p-0">
+                <EmptyState
+                  compact
+                  icon={IconRoute}
+                  title="Nenhuma trilha disponível"
+                  description="Ainda não há trilhas de aprendizado para você. Explore o catálogo de cursos para começar."
+                />
               </CardContent>
             </Card>
-          ))}
+          ) : (
+            learningPaths.map((path) => (
+              <Card key={path.id}>
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 space-y-1">
+                      <h3 className="font-semibold">{path.title}</h3>
+                      <p className="text-muted-foreground text-sm">{path.description}</p>
+                      <div className="flex items-center gap-4 pt-2">
+                        <span className="text-muted-foreground text-xs">
+                          {path.completedCourses}/{path.totalCourses} cursos
+                        </span>
+                        <Progress value={path.progress} className="h-1.5 max-w-[200px] flex-1" />
+                        <span className="text-xs font-medium">{path.progress}%</span>
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href="/trilhas">Continuar</Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
 
         {/* Right sidebar */}
         <div className="space-y-6">
-          <LeaderboardCard entries={MOCK_LEADERBOARD} />
+          {!isLeaderboardLoading && leaderboard.length === 0 ? (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-sm font-medium">
+                  <IconTrophy className="size-4 text-amber-500" />
+                  Top Aprendizes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <EmptyState
+                  compact
+                  icon={IconTrophy}
+                  title="Ranking ainda vazio"
+                  description="Conclua aulas e cursos para aparecer entre os top aprendizes."
+                />
+              </CardContent>
+            </Card>
+          ) : (
+            <LeaderboardCard entries={isLeaderboardLoading ? undefined : leaderboard} />
+          )}
 
           {/* Recent achievement */}
           <Card>
@@ -197,15 +239,29 @@ function AuthenticatedDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-3">
-                <div className="flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-lg text-white">
-                  🏆
+              {isLoading ? (
+                <div className="flex items-center gap-3">
+                  <Skeleton className="size-12 shrink-0 rounded-full" />
+                  <div className="flex-1 space-y-1.5">
+                    <Skeleton className="h-4 w-28" />
+                    <Skeleton className="h-3 w-40" />
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">Branding Master</p>
-                  <p className="text-muted-foreground text-xs">Concluiu o curso de Branding Estratégico</p>
+              ) : lastAchievement ? (
+                <div className="flex items-center gap-3">
+                  <div className="flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-lg text-white">
+                    🏆
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{lastAchievement.title}</p>
+                    <p className="text-muted-foreground text-xs">Curso concluído</p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <p className="text-muted-foreground text-sm">
+                  Conclua um curso para desbloquear sua primeira conquista.
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -215,10 +271,25 @@ function AuthenticatedDashboard() {
               <CardTitle className="text-sm font-medium">Recomendado para você</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {courses
-                .filter((c) => c.status === "nao_iniciado")
-                .slice(0, 3)
-                .map((course) => (
+              {isLoading ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-3 p-2">
+                    <Skeleton className="size-9 shrink-0 rounded-lg" />
+                    <div className="flex-1 space-y-1.5">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-20" />
+                    </div>
+                  </div>
+                ))
+              ) : recommendedCourses.length === 0 ? (
+                <p className="text-muted-foreground text-sm">
+                  Nenhuma recomendação no momento.{" "}
+                  <Link href="/explorar" className="underline">
+                    Explorar catálogo
+                  </Link>
+                </p>
+              ) : (
+                recommendedCourses.map((course) => (
                   <Link
                     key={course.id}
                     href={`/cursos/${course.id}`}
@@ -234,7 +305,8 @@ function AuthenticatedDashboard() {
                       </p>
                     </div>
                   </Link>
-                ))}
+                ))
+              )}
             </CardContent>
           </Card>
         </div>

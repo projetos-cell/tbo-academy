@@ -1,14 +1,17 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared";
 import { CourseCard } from "@/features/courses/components/course-card";
 import { CourseStatsCards } from "@/features/courses/components/course-stats-cards";
-import { MOCK_COURSES, COURSE_CATEGORIES } from "@/features/courses/data/mock-courses";
+import { COURSE_CATEGORIES } from "@/features/courses/data/mock-courses";
 import { useCourses } from "@/features/courses/hooks/use-courses";
 import type { CourseStatus } from "@/features/courses/types";
-import { IconSearch, IconAdjustmentsHorizontal, IconLibrary } from "@tabler/icons-react";
+import { IconSearch, IconAdjustmentsHorizontal, IconLibrary, IconBook2 } from "@tabler/icons-react";
 
 type StatusFilter = CourseStatus | "todos";
 
@@ -19,8 +22,8 @@ export default function ExplorarCursosPage() {
   const [status, setStatus] = useState<StatusFilter>("todos");
   const [showFilters, setShowFilters] = useState(false);
 
-  const { data: dbCourses } = useCourses();
-  const courses = dbCourses && dbCourses.length > 0 ? dbCourses : MOCK_COURSES;
+  const { data: dbCourses, isLoading } = useCourses();
+  const courses = useMemo(() => dbCourses ?? [], [dbCourses]);
 
   const filteredCourses = useMemo(() => {
     return courses.filter((course) => {
@@ -54,7 +57,11 @@ export default function ExplorarCursosPage() {
             <h1 className="font-display text-4xl font-bold tracking-tight text-white md:text-5xl">
               <em className="text-volt font-black not-italic">Todos</em> os Cursos
             </h1>
-            <p className="text-sm text-white/40">{courses.length} cursos disponíveis no Academy Pass</p>
+            <p className="text-sm text-white/60">
+              {isLoading
+                ? "Carregando cursos…"
+                : `${courses.length} ${courses.length === 1 ? "curso disponível" : "cursos disponíveis"} no Academy Pass`}
+            </p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -63,6 +70,7 @@ export default function ExplorarCursosPage() {
               <IconSearch className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-white/30" />
               <input
                 type="text"
+                aria-label="Buscar cursos"
                 placeholder="Buscar cursos..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -133,10 +141,28 @@ export default function ExplorarCursosPage() {
       </div>
 
       {/* Stats */}
-      <CourseStatsCards courses={courses} />
+      {!isLoading && courses.length > 0 && <CourseStatsCards courses={courses} />}
 
       {/* Course grid */}
-      {filteredCourses.length > 0 ? (
+      {isLoading ? (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-72 w-full rounded-2xl" />
+          ))}
+        </div>
+      ) : courses.length === 0 ? (
+        <div className="rounded-2xl bg-white shadow-sm">
+          <EmptyState
+            icon={IconBook2}
+            title="Nenhum curso disponível ainda"
+            description="Os cursos do Academy Pass aparecerão aqui assim que forem publicados. Enquanto isso, faça seu diagnóstico para receber recomendações personalizadas."
+          >
+            <Button asChild size="sm" className="gap-1.5">
+              <Link href="/diagnostico">Fazer diagnóstico</Link>
+            </Button>
+          </EmptyState>
+        </div>
+      ) : filteredCourses.length > 0 ? (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filteredCourses.map((course) => (
             <CourseCard key={course.id} course={course} />

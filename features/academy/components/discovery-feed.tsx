@@ -22,7 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import { usePreviewSession } from "@/features/academy/hooks/use-preview-session";
 import { usePreviewStore } from "@/features/diagnostico/stores/preview-store";
-import { MOCK_COURSES } from "@/features/courses/data/mock-courses";
+import { useCourses } from "@/features/courses/hooks/use-courses";
 import { CourseCard } from "@/features/courses/components/course-card";
 import type { LevelKey } from "@/features/diagnostico/data/diagnostic-data";
 
@@ -39,12 +39,13 @@ export function DiscoveryFeed() {
   const { weakAreas, totalScore100, totalLevel, unlockedCourseIds, diagnosticComplete, freeContentCount } =
     usePreviewSession();
   const openPricing = usePreviewStore((s) => s.openPricing);
+  const { data: courses = [] } = useCourses();
 
   // Courses unlocked for this user
-  const unlockedCourses = MOCK_COURSES.filter((c) => unlockedCourseIds.includes(c.id));
+  const unlockedCourses = courses.filter((c) => unlockedCourseIds.includes(c.id));
 
   // Courses NOT unlocked for teaser display
-  const teaserCourses = MOCK_COURSES.filter((c) => !unlockedCourseIds.includes(c.id)).slice(0, 3);
+  const teaserCourses = courses.filter((c) => !unlockedCourseIds.includes(c.id)).slice(0, 3);
 
   if (!diagnosticComplete) {
     return <DiscoveryFeedNoDiagnostic />;
@@ -206,6 +207,7 @@ export function DiscoveryFeed() {
 // ─── Fallback when no diagnostic was completed ──────────────────
 function DiscoveryFeedNoDiagnostic() {
   const openPricing = usePreviewStore((s) => s.openPricing);
+  const { data: courses = [] } = useCourses();
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6 duration-500">
@@ -236,7 +238,7 @@ function DiscoveryFeedNoDiagnostic() {
       <div className="space-y-4">
         <h2 className="text-sm font-bold tracking-tight uppercase">Cursos disponíveis</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {MOCK_COURSES.slice(0, 6).map((course) => (
+          {courses.slice(0, 6).map((course) => (
             <div key={course.id} className="relative">
               <div className="absolute -top-2 -right-2 z-10">
                 <Badge

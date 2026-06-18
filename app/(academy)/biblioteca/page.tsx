@@ -25,89 +25,6 @@ import {
   IconCalendar,
 } from "@tabler/icons-react";
 
-const MOCK_RESOURCES: Resource[] = [
-  {
-    id: "1",
-    title: "Template de Briefing Criativo",
-    description: "Modelo completo de briefing para empreendimentos imobiliários com checklist de entregáveis",
-    type: "template",
-    category: "Branding",
-    downloadsCount: 234,
-    isFeatured: true,
-    createdAt: "2026-03-15",
-  },
-  {
-    id: "2",
-    title: "Guia de Paleta Cromática para Alto Padrão",
-    description: "Referência de combinações de cores validadas para empreendimentos premium e AAA",
-    type: "guia",
-    category: "Direção de Arte",
-    downloadsCount: 189,
-    isFeatured: true,
-    createdAt: "2026-03-10",
-  },
-  {
-    id: "3",
-    title: "Checklist de Entrega de Archviz",
-    description: "Lista completa de itens para validar antes de entregar renders ao cliente",
-    type: "checklist",
-    category: "Archviz",
-    downloadsCount: 156,
-    isFeatured: false,
-    createdAt: "2026-02-20",
-  },
-  {
-    id: "4",
-    title: "Masterclass: Direção de Câmeras 3D",
-    description: "Gravação completa da masterclass sobre composição e enquadramento em renders",
-    type: "video",
-    category: "Archviz",
-    downloadsCount: 312,
-    isFeatured: false,
-    createdAt: "2026-02-15",
-  },
-  {
-    id: "5",
-    title: "Deck de Apresentação — Modelo TBO",
-    description: "Template de apresentação para propostas comerciais com guidelines de marca",
-    type: "apresentacao",
-    category: "Comercial",
-    downloadsCount: 98,
-    isFeatured: false,
-    createdAt: "2026-01-20",
-  },
-  {
-    id: "6",
-    title: "Banco de Referências Visuais — Moodboards",
-    description: "Coleção curada de referências visuais organizadas por segmento e estilo",
-    type: "imagem",
-    category: "Direção de Arte",
-    downloadsCount: 201,
-    isFeatured: false,
-    createdAt: "2026-01-10",
-  },
-  {
-    id: "7",
-    title: "Guia de Tom de Voz para Incorporadoras",
-    description: "Manual prático de escrita para comunicação de empreendimentos por segmento",
-    type: "guia",
-    category: "Copywriting",
-    downloadsCount: 145,
-    isFeatured: false,
-    createdAt: "2025-12-15",
-  },
-  {
-    id: "8",
-    title: "Template de Roteiro — Filme de Lançamento",
-    description: "Estrutura padrão de roteiro para vídeos de lançamento imobiliário",
-    type: "template",
-    category: "Audiovisual",
-    downloadsCount: 167,
-    isFeatured: false,
-    createdAt: "2025-12-10",
-  },
-];
-
 const TYPE_CONFIG: Record<ResourceType, { icon: React.ElementType }> = {
   template: { icon: IconTemplate },
   guia: { icon: IconFileText },
@@ -134,10 +51,7 @@ function formatDate(dateStr: string): string {
 export default function BibliotecaPage() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("todos");
-  const { resources: dbResources, featured: dbFeatured, isLoading } = useLibrary();
-
-  const resources = dbResources.length > 0 ? dbResources : MOCK_RESOURCES;
-  const featuredItems = dbFeatured.length > 0 ? dbFeatured : MOCK_RESOURCES.filter((r) => r.isFeatured);
+  const { resources, featured: featuredItems, isLoading } = useLibrary();
 
   const filtered = useMemo(() => {
     let items = resources;
@@ -168,7 +82,7 @@ export default function BibliotecaPage() {
           <Skeleton className="h-44 rounded-2xl" />
           <Skeleton className="h-44 rounded-2xl" />
         </div>
-      ) : (
+      ) : featuredItems.length > 0 ? (
         <div className="grid gap-4 sm:grid-cols-2">
           {featuredItems.map((resource) => {
             const config = TYPE_CONFIG[resource.type];
@@ -208,7 +122,7 @@ export default function BibliotecaPage() {
             );
           })}
         </div>
-      )}
+      ) : null}
 
       {/* Search */}
       <div className="relative">
@@ -269,11 +183,17 @@ export default function BibliotecaPage() {
                 <ResourceCard key={resource.id} resource={resource} />
               ))}
             </div>
-          ) : (
+          ) : search || activeTab !== "todos" ? (
             <EmptyState
               icon={IconLibrary}
               title="Nenhum recurso encontrado"
               description="Tente ajustar sua busca ou filtro."
+            />
+          ) : (
+            <EmptyState
+              icon={IconLibrary}
+              title="Nenhum material disponível ainda"
+              description="Os templates, guias e recursos da TBO aparecerão aqui assim que forem publicados."
             />
           )}
         </TabsContent>

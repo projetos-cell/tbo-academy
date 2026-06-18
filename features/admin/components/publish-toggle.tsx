@@ -37,11 +37,11 @@ export function PublishToggle({ course }: PublishToggleProps) {
       {updateCourse.isPending ? (
         <IconLoader2 className="size-3.5 animate-spin" />
       ) : isPublished ? (
-        <IconEye className="size-3.5" />
-      ) : (
         <IconEyeOff className="size-3.5" />
+      ) : (
+        <IconEye className="size-3.5" />
       )}
-      {isPublished ? "Publicado" : "Publicar"}
+      {isPublished ? "Despublicar" : "Publicar"}
     </Button>
   );
 }

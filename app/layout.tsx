@@ -31,8 +31,19 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://academy.wearetbo.com.br"),
   title: "TBO Academy",
   description: "TBO Academy - Plataforma de aprendizado",
+  openGraph: {
+    type: "website",
+    siteName: "TBO Academy",
+    title: "TBO Academy",
+    description: "TBO Academy - Plataforma de aprendizado",
+    locale: "pt_BR",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({

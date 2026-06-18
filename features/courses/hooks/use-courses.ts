@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import type { Course } from "@/features/courses/types";
-import { MOCK_COURSES, MOCK_LEARNING_PATHS } from "@/features/courses/data/mock-courses";
 
 export interface DbLearningPath {
   id: string;
@@ -19,12 +18,12 @@ export interface DbLearningPath {
 async function fetchCourses(): Promise<Course[]> {
   try {
     const res = await fetch("/api/academy/courses");
-    if (!res.ok) return MOCK_COURSES;
+    if (!res.ok) return [];
     const data = await res.json();
-    if (!Array.isArray(data) || data.length === 0) return MOCK_COURSES;
+    if (!Array.isArray(data)) return [];
     return data as Course[];
   } catch {
-    return MOCK_COURSES;
+    return [];
   }
 }
 
@@ -57,19 +56,15 @@ export function useLearningPaths() {
 }
 
 /**
- * Returns the mock learning paths mapped to a shape compatible with
- * MOCK_LEARNING_PATHS, merged with real DB paths if available.
+ * Mapeia as trilhas reais do Supabase para a shape de LearningPath.
+ * Sem trilhas no banco → retorna [] (empty state na UI, sem mock).
  */
 export function useMergedLearningPaths(courses: Course[]) {
   const { data: dbPaths = [] } = useLearningPaths();
 
   if (dbPaths.length === 0) {
-    // Fall back to mocks
-    return MOCK_LEARNING_PATHS.map((p) => ({
-      ...p,
-      completedCourses: p.completedCourses,
-      progress: p.progress,
-    }));
+    // Sem trilhas reais → vazio (empty state na UI). Nada de mock.
+    return [];
   }
 
   return dbPaths.map((p) => {

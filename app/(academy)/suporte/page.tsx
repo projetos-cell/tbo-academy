@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared";
 import { useSupport } from "@/features/support/hooks/use-support";
-import type { FaqItem } from "@/features/support/types";
 import {
   IconHelpCircle,
   IconSearch,
@@ -24,73 +24,6 @@ import {
   IconArrowRight,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
-
-const MOCK_FAQ: FaqItem[] = [
-  {
-    id: "1",
-    question: "Como faço para acessar meus cursos?",
-    answer:
-      'Após o login, acesse a seção "Meus Cursos" no menu lateral. Lá você encontra todos os cursos em andamento, concluídos e salvos. Clique em qualquer curso para continuar de onde parou.',
-    category: "Acesso",
-    sortOrder: 1,
-  },
-  {
-    id: "2",
-    question: "Como funciona o sistema de certificados?",
-    answer:
-      'Ao concluir 100% de um curso (assistir todas as aulas e completar os exercícios), seu certificado é gerado automaticamente. Acesse a seção "Certificados" para baixar ou compartilhar.',
-    category: "Certificados",
-    sortOrder: 2,
-  },
-  {
-    id: "3",
-    question: "Posso assistir às aulas ao vivo depois?",
-    answer:
-      'Sim! Todas as aulas ao vivo ficam gravadas e disponíveis na aba "Gravações" dentro da seção "Aulas ao Vivo". Você pode assistir quantas vezes quiser.',
-    category: "Aulas ao Vivo",
-    sortOrder: 3,
-  },
-  {
-    id: "4",
-    question: "Como funciona o ranking e os pontos?",
-    answer:
-      "Você ganha pontos ao completar aulas, módulos e cursos. Ações como manter uma sequência de estudos e interagir na comunidade também geram pontos. O ranking é atualizado em tempo real.",
-    category: "Gamificação",
-    sortOrder: 4,
-  },
-  {
-    id: "5",
-    question: "Como altero meu plano de assinatura?",
-    answer:
-      'Acesse "Preferências" no menu lateral, vá até a aba de assinatura e clique em "Alterar plano". Upgrades são aplicados imediatamente, e downgrades entram em vigor no próximo ciclo de cobrança.',
-    category: "Assinatura",
-    sortOrder: 5,
-  },
-  {
-    id: "6",
-    question: "Esqueci minha senha, como recuperar?",
-    answer:
-      'Na tela de login, clique em "Esqueci minha senha". Você receberá um e-mail com um link para redefinir. O link expira em 24 horas. Caso não receba, verifique sua pasta de spam.',
-    category: "Acesso",
-    sortOrder: 6,
-  },
-  {
-    id: "7",
-    question: "Os materiais da Biblioteca podem ser usados em projetos?",
-    answer:
-      "Sim, todos os templates e materiais da Biblioteca são de uso livre para projetos internos da TBO. Para uso externo ou redistribuição, consulte os termos de cada recurso.",
-    category: "Biblioteca",
-    sortOrder: 7,
-  },
-  {
-    id: "8",
-    question: "Como participo da Comunidade?",
-    answer:
-      'Acesse a seção "Comunidade" no menu lateral. Lá você pode criar tópicos, responder discussões e interagir com outros profissionais. Mantenha sempre o respeito e contribua com conteúdo relevante.',
-    category: "Comunidade",
-    sortOrder: 8,
-  },
-];
 
 const SUPPORT_CHANNELS = [
   {
@@ -134,9 +67,7 @@ const HELP_CATEGORIES = [
 export default function SuportePage() {
   const [search, setSearch] = useState("");
   const [openFaq, setOpenFaq] = useState<string | null>(null);
-  const { faq: dbFaq, isLoading } = useSupport();
-
-  const faqItems = dbFaq.length > 0 ? dbFaq : MOCK_FAQ;
+  const { faq: faqItems, isLoading } = useSupport();
 
   const filteredFaq = search
     ? faqItems.filter(
@@ -247,13 +178,20 @@ export default function SuportePage() {
                   )}
                 </div>
               ))
-            ) : (
+            ) : search ? (
               <div className="py-8 text-center">
                 <p className="text-muted-foreground text-sm">Nenhum resultado para &quot;{search}&quot;</p>
                 <p className="text-muted-foreground mt-1 text-xs">
                   Tente termos diferentes ou entre em contato conosco
                 </p>
               </div>
+            ) : (
+              <EmptyState
+                compact
+                icon={IconHelpCircle}
+                title="Nenhuma pergunta frequente ainda"
+                description="As respostas para as dúvidas mais comuns aparecerão aqui em breve. Enquanto isso, fale com a gente pelos canais ao lado."
+              />
             )}
           </div>
         </div>

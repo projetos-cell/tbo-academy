@@ -22,93 +22,6 @@ import {
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 
-const MOCK_FEED: FeedPost[] = [
-  {
-    id: "1",
-    userId: "u1",
-    userName: "Ana Silva",
-    userInitials: "AS",
-    userRole: "Designer",
-    type: "conquista",
-    content: 'Conquistou o badge "Mestre em Branding"',
-    detail: "Completou 5 cursos da trilha de Branding Imobiliário",
-    likesCount: 12,
-    commentsCount: 3,
-    likedByMe: false,
-    createdAt: new Date(Date.now() - 2 * 3600000).toISOString(),
-  },
-  {
-    id: "2",
-    userId: "u2",
-    userName: "Carlos Mendes",
-    userInitials: "CM",
-    userRole: "Gerente de Projetos",
-    type: "conclusao",
-    content: 'Concluiu o curso "Gestão de Lançamentos Imobiliários"',
-    detail: "Nota final: 9.5/10 — Certificado emitido",
-    likesCount: 8,
-    commentsCount: 1,
-    likedByMe: false,
-    createdAt: new Date(Date.now() - 4 * 3600000).toISOString(),
-  },
-  {
-    id: "3",
-    userId: "u3",
-    userName: "Marina Costa",
-    userInitials: "MC",
-    userRole: "Coordenadora de Marketing",
-    type: "ranking",
-    content: "Subiu para o Top 3 no ranking geral!",
-    detail: "Acumulou 2.450 pontos nesta semana",
-    likesCount: 15,
-    commentsCount: 5,
-    likedByMe: false,
-    createdAt: new Date(Date.now() - 6 * 3600000).toISOString(),
-  },
-  {
-    id: "4",
-    userId: "u4",
-    userName: "TBO Academy",
-    userInitials: "TA",
-    userRole: "Plataforma",
-    type: "novo_curso",
-    content: 'Novo curso disponível: "Archviz para Campanhas de Alto Padrão"',
-    detail: "12 módulos · 4h de conteúdo · Nível Intermediário",
-    likesCount: 22,
-    commentsCount: 7,
-    likedByMe: false,
-    createdAt: new Date(Date.now() - 24 * 3600000).toISOString(),
-  },
-  {
-    id: "5",
-    userId: "u5",
-    userName: "Rafael Oliveira",
-    userInitials: "RO",
-    userRole: "Diretor Criativo",
-    type: "comentario",
-    content: 'Comentou na aula "Paleta Cromática em Empreendimentos Premium"',
-    detail: '"Excelente abordagem sobre a psicologia das cores no segmento AAA..."',
-    likesCount: 6,
-    commentsCount: 2,
-    likedByMe: false,
-    createdAt: new Date(Date.now() - 24 * 3600000).toISOString(),
-  },
-  {
-    id: "6",
-    userId: "u6",
-    userName: "Julia Santos",
-    userInitials: "JS",
-    userRole: "Analista de Marketing",
-    type: "conquista",
-    content: "Sequência de 30 dias de estudo!",
-    detail: 'Conquistou o badge "Dedicação Total"',
-    likesCount: 19,
-    commentsCount: 4,
-    likedByMe: false,
-    createdAt: new Date(Date.now() - 48 * 3600000).toISOString(),
-  },
-];
-
 const TYPE_CONFIG: Record<FeedItemType, { icon: React.ElementType; label: string }> = {
   conquista: { icon: IconTrophy, label: "Conquista" },
   conclusao: { icon: IconCertificate, label: "Conclusão" },
@@ -127,8 +40,7 @@ function formatTimeAgo(dateStr: string): string {
 }
 
 export default function FeedPage() {
-  const { posts: dbPosts, isLoading, toggleLike } = useFeed();
-  const posts = dbPosts.length > 0 ? dbPosts : MOCK_FEED;
+  const { posts, isLoading, toggleLike } = useFeed();
 
   const conquistas = useMemo(() => posts.filter((i) => i.type === "conquista" || i.type === "ranking"), [posts]);
   const novidades = useMemo(() => posts.filter((i) => i.type === "novo_curso" || i.type === "conclusao"), [posts]);
@@ -164,30 +76,46 @@ export default function FeedPage() {
               ) : (
                 <EmptyState
                   icon={IconNews}
-                  title="Nenhuma atividade"
-                  description="O feed estará movimentado em breve."
+                  title="Seu feed está vazio por enquanto"
+                  description="Conforme a comunidade avança nos cursos, as conquistas e novidades aparecerão aqui."
                 />
               )}
             </TabsContent>
 
             <TabsContent value="conquistas" className="space-y-4">
-              {conquistas.map((post) => (
-                <FeedCard
-                  key={post.id}
-                  post={post}
-                  onLike={() => toggleLike({ postId: post.id, liked: post.likedByMe })}
+              {conquistas.length > 0 ? (
+                conquistas.map((post) => (
+                  <FeedCard
+                    key={post.id}
+                    post={post}
+                    onLike={() => toggleLike({ postId: post.id, liked: post.likedByMe })}
+                  />
+                ))
+              ) : (
+                <EmptyState
+                  icon={IconNews}
+                  title="Seu feed está vazio por enquanto"
+                  description="Ainda não há conquistas para mostrar. Elas aparecerão aqui assim que a comunidade começar a evoluir."
                 />
-              ))}
+              )}
             </TabsContent>
 
             <TabsContent value="novidades" className="space-y-4">
-              {novidades.map((post) => (
-                <FeedCard
-                  key={post.id}
-                  post={post}
-                  onLike={() => toggleLike({ postId: post.id, liked: post.likedByMe })}
+              {novidades.length > 0 ? (
+                novidades.map((post) => (
+                  <FeedCard
+                    key={post.id}
+                    post={post}
+                    onLike={() => toggleLike({ postId: post.id, liked: post.likedByMe })}
+                  />
+                ))
+              ) : (
+                <EmptyState
+                  icon={IconNews}
+                  title="Seu feed está vazio por enquanto"
+                  description="Ainda não há novidades para mostrar. Novos cursos e conclusões aparecerão aqui."
                 />
-              ))}
+              )}
             </TabsContent>
           </>
         )}
@@ -228,6 +156,8 @@ function FeedCard({ post, onLike }: { post: FeedPost; onLike: () => void }) {
             <div className="mt-4 flex items-center gap-5">
               <button
                 onClick={onLike}
+                aria-label={post.likedByMe ? "Remover curtida" : "Curtir"}
+                aria-pressed={post.likedByMe}
                 className={cn(
                   "flex items-center gap-1.5 text-xs font-semibold transition-colors",
                   post.likedByMe ? "text-ink" : "hover:text-ink text-[var(--tbo-gray-500)]",
@@ -236,14 +166,23 @@ function FeedCard({ post, onLike }: { post: FeedPost; onLike: () => void }) {
                 <IconHeart className={cn("size-3.5", post.likedByMe && "fill-volt text-ink")} />
                 {post.likesCount}
               </button>
-              <button className="hover:text-ink flex items-center gap-1.5 text-xs font-semibold text-[var(--tbo-gray-500)] transition-colors">
+              <button
+                aria-label="Comentar"
+                className="hover:text-ink flex items-center gap-1.5 text-xs font-semibold text-[var(--tbo-gray-500)] transition-colors"
+              >
                 <IconMessageCircle className="size-3.5" />
                 {post.commentsCount}
               </button>
-              <button className="hover:text-ink flex items-center gap-1.5 text-xs font-semibold text-[var(--tbo-gray-500)] transition-colors">
+              <button
+                aria-label="Compartilhar"
+                className="hover:text-ink flex items-center gap-1.5 text-xs font-semibold text-[var(--tbo-gray-500)] transition-colors"
+              >
                 <IconShare className="size-3.5" />
               </button>
-              <button className="hover:text-ink ml-auto flex items-center gap-1.5 text-xs font-semibold text-[var(--tbo-gray-500)] transition-colors">
+              <button
+                aria-label="Salvar"
+                className="hover:text-ink ml-auto flex items-center gap-1.5 text-xs font-semibold text-[var(--tbo-gray-500)] transition-colors"
+              >
                 <IconBookmark className="size-3.5" />
               </button>
             </div>

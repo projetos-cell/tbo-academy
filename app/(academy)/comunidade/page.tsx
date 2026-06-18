@@ -1,104 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared";
 import { useCommunity } from "@/features/community/hooks/use-community";
-import type { ForumTopic, CommunityStats } from "@/features/community/types";
+import type { ForumTopic } from "@/features/community/types";
 import { IconUsers, IconMessageCircle, IconPin, IconFlame, IconPlus, IconThumbUp, IconEye } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
-
-const MOCK_TOPICS: ForumTopic[] = [
-  {
-    id: "1",
-    authorName: "Marina Costa",
-    authorInitials: "MC",
-    title: "Como montar um briefing criativo que o cliente realmente aprova?",
-    category: "Branding",
-    isPinned: true,
-    isHot: false,
-    repliesCount: 23,
-    viewsCount: 156,
-    likesCount: 18,
-    lastActivityAt: new Date(Date.now() - 30 * 60000).toISOString(),
-    createdAt: "",
-  },
-  {
-    id: "2",
-    authorName: "Rafael Oliveira",
-    authorInitials: "RO",
-    title: "Melhores práticas de Archviz para empreendimentos de alto padrão",
-    category: "Archviz",
-    isPinned: false,
-    isHot: true,
-    repliesCount: 17,
-    viewsCount: 98,
-    likesCount: 12,
-    lastActivityAt: new Date(Date.now() - 2 * 3600000).toISOString(),
-    createdAt: "",
-  },
-  {
-    id: "3",
-    authorName: "Carlos Mendes",
-    authorInitials: "CM",
-    title: "Qual a melhor stack para landing pages de lançamento?",
-    category: "Tech",
-    isPinned: false,
-    isHot: true,
-    repliesCount: 31,
-    viewsCount: 210,
-    likesCount: 25,
-    lastActivityAt: new Date(Date.now() - 3 * 3600000).toISOString(),
-    createdAt: "",
-  },
-  {
-    id: "4",
-    authorName: "Julia Santos",
-    authorInitials: "JS",
-    title: "Dicas para fotografar maquetes físicas",
-    category: "Fotografia",
-    isPinned: false,
-    isHot: false,
-    repliesCount: 8,
-    viewsCount: 64,
-    likesCount: 9,
-    lastActivityAt: new Date(Date.now() - 5 * 3600000).toISOString(),
-    createdAt: "",
-  },
-  {
-    id: "5",
-    authorName: "Ana Silva",
-    authorInitials: "AS",
-    title: "Storytelling em vídeos de lançamento — o que funciona em 2026?",
-    category: "Audiovisual",
-    isPinned: false,
-    isHot: false,
-    repliesCount: 14,
-    viewsCount: 112,
-    likesCount: 16,
-    lastActivityAt: new Date(Date.now() - 24 * 3600000).toISOString(),
-    createdAt: "",
-  },
-  {
-    id: "6",
-    authorName: "Pedro Lima",
-    authorInitials: "PL",
-    title: "Como usar IA generativa sem perder a identidade da marca?",
-    category: "Estratégia",
-    isPinned: false,
-    isHot: false,
-    repliesCount: 19,
-    viewsCount: 145,
-    likesCount: 21,
-    lastActivityAt: new Date(Date.now() - 24 * 3600000).toISOString(),
-    createdAt: "",
-  },
-];
-
-const MOCK_STATS: CommunityStats = { totalMembers: 127, totalTopics: 84, repliesToday: 23, onlineNow: 18 };
 
 const CATEGORIES = ["Branding", "Archviz", "Tech", "Fotografia", "Audiovisual", "Estratégia"];
 
@@ -113,12 +25,10 @@ function formatTimeAgo(dateStr: string): string {
 }
 
 export default function ComunidadePage() {
+  const router = useRouter();
   const [sortTab, setSortTab] = useState("recentes");
   const sort = sortTab === "populares" ? "popular" : "recent";
-  const { topics: dbTopics, stats: dbStats, isLoading } = useCommunity(sort);
-
-  const topics = dbTopics.length > 0 ? dbTopics : MOCK_TOPICS;
-  const stats = dbStats.totalMembers > 0 ? dbStats : MOCK_STATS;
+  const { topics, stats, isLoading } = useCommunity(sort);
 
   const noReplyTopics = topics.filter((t) => t.repliesCount < 10);
 
@@ -200,26 +110,41 @@ export default function ComunidadePage() {
                   ) : (
                     <EmptyState
                       icon={IconMessageCircle}
-                      title="Nenhum tópico"
-                      description="Seja o primeiro a criar um tópico."
+                      title="Ainda não há tópicos na comunidade"
+                      description="Seja o primeiro a iniciar uma conversa, ou explore os cursos disponíveis enquanto a comunidade cresce."
+                      cta={{ label: "Explorar cursos", onClick: () => router.push("/explorar") }}
                     />
                   )}
                 </TabsContent>
                 <TabsContent value="populares" className="space-y-3">
-                  {[...topics]
-                    .sort((a, b) => b.likesCount - a.likesCount)
-                    .map((t) => (
-                      <TopicCard key={t.id} topic={t} />
-                    ))}
+                  {topics.length > 0 ? (
+                    [...topics]
+                      .sort((a, b) => b.likesCount - a.likesCount)
+                      .map((t) => <TopicCard key={t.id} topic={t} />)
+                  ) : (
+                    <EmptyState
+                      icon={IconMessageCircle}
+                      title="Ainda não há tópicos na comunidade"
+                      description="Seja o primeiro a iniciar uma conversa, ou explore os cursos disponíveis enquanto a comunidade cresce."
+                      cta={{ label: "Explorar cursos", onClick: () => router.push("/explorar") }}
+                    />
+                  )}
                 </TabsContent>
                 <TabsContent value="sem-resposta" className="space-y-3">
                   {noReplyTopics.length > 0 ? (
                     noReplyTopics.map((t) => <TopicCard key={t.id} topic={t} />)
-                  ) : (
+                  ) : topics.length > 0 ? (
                     <EmptyState
                       icon={IconMessageCircle}
                       title="Todos respondidos!"
-                      description="Não há tópicos sem resposta."
+                      description="Não há tópicos sem resposta no momento."
+                    />
+                  ) : (
+                    <EmptyState
+                      icon={IconMessageCircle}
+                      title="Ainda não há tópicos na comunidade"
+                      description="Seja o primeiro a iniciar uma conversa, ou explore os cursos disponíveis enquanto a comunidade cresce."
+                      cta={{ label: "Explorar cursos", onClick: () => router.push("/explorar") }}
                     />
                   )}
                 </TabsContent>

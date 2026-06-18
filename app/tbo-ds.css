@@ -1258,6 +1258,48 @@
 }
 
 /* ============================================================
+   FOCO VISÍVEL (WCAG 2.4.7) — elementos editoriais custom
+   Anel perceptível em fundo claro e escuro.
+   - Elementos sobre o hero escuro (.eo-navlinks a, .eo-iconbtn):
+     outline volt puro (alto contraste sobre escuro).
+   - Elementos sobre fundo claro (.pill, .tagpill, .ccard,
+     .ed-acc summary): outline forest-700 (contraste no claro)
+     + ring volt externo (perceptível também no escuro).
+   ============================================================ */
+
+/* Sobre fundo escuro — volt tem ótimo contraste */
+.eo-navlinks a:focus-visible,
+.eo-iconbtn:focus-visible {
+  outline: 2px solid var(--tbo-volt);
+  outline-offset: 2px;
+  border-radius: var(--tbo-radius-sm);
+}
+.eo-iconbtn:focus-visible {
+  border-radius: var(--tbo-radius-full);
+}
+
+/* Sobre fundo claro — outline forest-700 garante contraste,
+   box-shadow volt adiciona anel visível também no escuro */
+.pill:focus-visible,
+.tagpill:focus-visible,
+.ccard:focus-visible,
+.ed-acc summary:focus-visible {
+  outline: 2px solid var(--tbo-forest-700);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(186, 242, 65, 0.5);
+}
+.pill:focus-visible,
+.tagpill:focus-visible {
+  border-radius: var(--tbo-radius-full);
+}
+.ccard:focus-visible {
+  border-radius: var(--tbo-radius-xl);
+}
+.ed-acc summary:focus-visible {
+  border-radius: var(--tbo-radius-lg);
+}
+
+/* ============================================================
    RESPONSIVO
    ============================================================ */
 @media (max-width: 920px) {

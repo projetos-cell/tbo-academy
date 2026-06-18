@@ -67,7 +67,8 @@ const ACADEMY_NAV: { label: string; items: NavItem[]; separator?: boolean }[] = 
   {
     label: "Principal",
     items: [
-      { href: "/explorar", label: "Home", icon: IconHome, requiredProduct: "diagnostic", freeInPreview: true },
+      { href: "/inicio", label: "Início", icon: IconHome, requiredProduct: "diagnostic", freeInPreview: true },
+      { href: "/explorar", label: "Explorar", icon: IconSparkles, requiredProduct: "diagnostic", freeInPreview: true },
       { href: "/feed", label: "Feed", icon: IconNews, requiredProduct: "essencial" },
       { href: "/meus-cursos", label: "Cursos", icon: IconBook2, requiredProduct: "essencial" },
       { href: "/trilhas", label: "Workflows", icon: IconStack2, requiredProduct: "essencial" },

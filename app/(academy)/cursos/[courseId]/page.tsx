@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { MOCK_COURSES, MOCK_MODULES, OPTIONAL_MODULES } from "@/features/courses/data/mock-courses";
+import { OPTIONAL_MODULES } from "@/features/courses/data/mock-courses";
 import { EmptyState } from "@/components/shared";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   IconSchool,
   IconArrowLeft,
@@ -14,14 +15,15 @@ import {
   IconLock,
   IconClock,
   IconStar,
+  IconBooks,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { ContentGate } from "@/features/academy/components/content-gate";
 import { CourseVideoPlayer } from "@/features/courses/components/course-video-player";
 import { usePreviewStore } from "@/features/diagnostico/stores/preview-store";
 import { usePreviewSession } from "@/features/academy/hooks/use-preview-session";
-import type { CourseModule } from "@/features/courses/types";
 import { toast } from "sonner";
+import { useCourse, type CourseModuleView } from "@/features/courses/hooks/use-course";
 import { useCourseProgress } from "@/features/courses/hooks/use-course-progress";
 import { trackCourseStarted, trackModuleCompleted } from "@/lib/analytics";
 
@@ -30,15 +32,12 @@ export default function AcademyCourseDetailPage() {
   const courseId = params.courseId;
   const isPreview = usePreviewStore((s) => s.isPreview);
   const { isCourseUnlocked, trackCourseExplored } = usePreviewSession();
-  const [selectedModule, setSelectedModule] = useState<CourseModule | null>(null);
+  const [selectedModule, setSelectedModule] = useState<CourseModuleView | null>(null);
   const { markModuleComplete, markModuleInProgress, isModuleCompleted } = useCourseProgress();
 
-  const course = useMemo(() => MOCK_COURSES.find((c) => c.id === courseId), [courseId]);
-
-  const modules = useMemo(
-    () => MOCK_MODULES.filter((m) => m.courseId === courseId).sort((a, b) => a.order - b.order),
-    [courseId],
-  );
+  const { data, isLoading } = useCourse(courseId);
+  const course = data?.course ?? null;
+  const modules = data?.modules ?? [];
 
   useEffect(() => {
     if (isPreview && courseId) {
@@ -46,18 +45,34 @@ export default function AcademyCourseDetailPage() {
     }
   }, [isPreview, courseId, trackCourseExplored]);
 
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-[280px] w-full rounded-2xl" />
+        <div className="grid gap-8 lg:grid-cols-[1.6fr_1fr]">
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-48" />
+            <Skeleton className="h-80 w-full rounded-2xl" />
+          </div>
+          <Skeleton className="h-72 w-full rounded-2xl" />
+        </div>
+      </div>
+    );
+  }
+
   if (!course) {
     return (
       <EmptyState
         icon={IconSchool}
         title="Curso não encontrado"
-        description="O curso que você está procurando não existe ou foi removido."
+        description="O curso que você está procurando não existe ou ainda não foi publicado."
         cta={{ label: "Voltar para cursos", onClick: () => window.history.back() }}
       />
     );
   }
 
-  const handleModuleClick = (mod: CourseModule) => {
+  const handleModuleClick = (mod: CourseModuleView) => {
     if (mod.status === "locked") return;
     if (mod.videoUrl) {
       setSelectedModule(mod);
@@ -71,7 +86,7 @@ export default function AcademyCourseDetailPage() {
     }
   };
 
-  const handleMarkComplete = (mod: CourseModule) => {
+  const handleMarkComplete = (mod: CourseModuleView) => {
     markModuleComplete(mod.id);
     trackModuleCompleted(mod.id, mod.title, courseId);
     toast.success("Módulo concluído!", { description: `"${mod.title}" marcado como concluído.` });
@@ -137,6 +152,16 @@ export default function AcademyCourseDetailPage() {
             courseId={courseId}
             previewLevel={isPreview && isCourseUnlocked(courseId) ? "full" : "none"}
           >
+            {modules.length === 0 ? (
+              <div className="bg-card rounded-2xl border border-black/[0.06] shadow-sm">
+                <EmptyState
+                  icon={IconBooks}
+                  title="Conteúdo em breve"
+                  description="As aulas deste curso ainda não foram publicadas. Volte em breve para conferir os módulos."
+                  compact
+                />
+              </div>
+            ) : (
             <div className="bg-card overflow-hidden rounded-2xl border border-black/[0.06] shadow-sm">
               {modules.map((mod, i) => {
                 const isLocked = mod.status === "locked";
@@ -203,6 +228,7 @@ export default function AcademyCourseDetailPage() {
                 );
               })}
             </div>
+            )}
           </ContentGate>
 
           {/* Módulos opcionais */}

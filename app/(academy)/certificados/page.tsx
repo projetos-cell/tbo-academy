@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared";
-import { MOCK_COURSES } from "@/features/courses/data/mock-courses";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useCourses } from "@/features/courses/hooks/use-courses";
 import { IconCertificate, IconDownload, IconShare, IconCalendar, IconLoader2 } from "@tabler/icons-react";
 import { useState } from "react";
 
@@ -34,7 +36,12 @@ function useCertificateDownload() {
 }
 
 export default function CertificadosPage() {
-  const completedCourses = useMemo(() => MOCK_COURSES.filter((c) => c.status === "concluido"), []);
+  const router = useRouter();
+  const { data: dbCourses, isLoading } = useCourses();
+  const completedCourses = useMemo(
+    () => (dbCourses ?? []).filter((c) => c.status === "concluido"),
+    [dbCourses],
+  );
   const { download, downloading } = useCertificateDownload();
 
   return (
@@ -45,7 +52,13 @@ export default function CertificadosPage() {
         description="Certificados conquistados ao concluir cursos"
       />
 
-      {completedCourses.length > 0 ? (
+      {isLoading ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-72 w-full rounded-2xl" />
+          ))}
+        </div>
+      ) : completedCourses.length > 0 ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {completedCourses.map((course) => (
             <div
@@ -67,13 +80,13 @@ export default function CertificadosPage() {
                 <h3 className="font-display text-[15px] leading-tight font-bold tracking-tight text-white">
                   {course.title}
                 </h3>
-                <p className="mt-1 text-xs text-white/50">{course.instructor}</p>
+                <p className="mt-1 text-xs text-white/70">{course.instructor}</p>
               </div>
 
               <div className="flex flex-1 flex-col p-4">
                 <span className="flex items-center gap-1.5 text-xs text-[var(--tbo-gray-500)]">
                   <IconCalendar className="text-forest-500 size-3.5" />
-                  Concluído em Mar 2026
+                  Curso concluído
                 </span>
 
                 <div className="mt-4 flex gap-2">
@@ -101,8 +114,9 @@ export default function CertificadosPage() {
       ) : (
         <EmptyState
           icon={IconCertificate}
-          title="Nenhum certificado ainda"
+          title="Você ainda não tem certificados"
           description="Conclua um curso completo para receber seu primeiro certificado."
+          cta={{ label: "Explorar cursos", onClick: () => router.push("/explorar") }}
         />
       )}
     </div>

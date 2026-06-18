@@ -31,84 +31,6 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
   Audiovisual: IconMovie,
 };
 
-const MOCK_CLASSES: LiveClass[] = [
-  {
-    id: "1",
-    title: "Direção Criativa para Lançamentos AAA",
-    description: "Como construir uma narrativa visual que posiciona o empreendimento no topo do mercado",
-    instructorName: "Marco Andolfato",
-    instructorInitials: "MA",
-    instructorRole: "Diretor Criativo",
-    category: "Direção Criativa",
-    scheduledAt: "2026-03-28T14:00:00Z",
-    durationMinutes: 90,
-    maxAttendees: 60,
-    attendeesCount: 42,
-    status: "upcoming",
-    isRegistered: false,
-  },
-  {
-    id: "2",
-    title: "Archviz: Do Briefing ao Render Final",
-    description: "Workshop prático cobrindo todo o pipeline de produção de imagens 3D para incorporadoras",
-    instructorName: "Rafael Oliveira",
-    instructorInitials: "RO",
-    instructorRole: "Lead 3D Artist",
-    category: "Archviz",
-    scheduledAt: "2026-03-31T10:00:00Z",
-    durationMinutes: 120,
-    maxAttendees: 50,
-    attendeesCount: 38,
-    status: "upcoming",
-    isRegistered: false,
-  },
-  {
-    id: "3",
-    title: "Branding Imobiliário: Tendências 2026",
-    description: "Análise das principais tendências de branding no mercado imobiliário brasileiro",
-    instructorName: "Ruy Lima",
-    instructorInitials: "RL",
-    instructorRole: "Diretor de Estratégia",
-    category: "Branding",
-    scheduledAt: "2026-04-02T15:00:00Z",
-    durationMinutes: 60,
-    maxAttendees: 80,
-    attendeesCount: 28,
-    status: "upcoming",
-    isRegistered: false,
-  },
-  {
-    id: "4",
-    title: "Masterclass: Paleta Cromática em Empreendimentos Premium",
-    description: "Como definir e aplicar paletas de cores que transmitem sofisticação e exclusividade",
-    instructorName: "Ana Silva",
-    instructorInitials: "AS",
-    instructorRole: "Diretora de Arte",
-    category: "Direção de Arte",
-    scheduledAt: "2026-03-15T14:00:00Z",
-    durationMinutes: 90,
-    maxAttendees: 60,
-    attendeesCount: 55,
-    status: "recorded",
-    isRegistered: false,
-  },
-  {
-    id: "5",
-    title: "Storytelling em Vídeos de Lançamento",
-    description: "Técnicas narrativas para criar filmes de lançamento que geram conexão emocional",
-    instructorName: "Carlos Mendes",
-    instructorInitials: "CM",
-    instructorRole: "Diretor de Audiovisual",
-    category: "Audiovisual",
-    scheduledAt: "2026-03-10T10:00:00Z",
-    durationMinutes: 120,
-    maxAttendees: 50,
-    attendeesCount: 47,
-    status: "recorded",
-    isRegistered: false,
-  },
-];
-
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
 }
@@ -127,10 +49,8 @@ function formatDuration(minutes: number): string {
 }
 
 export default function AulasAoVivoPage() {
-  const { upcoming: dbUpcoming, recorded: dbRecorded, isLoading, toggleRegistration } = useLiveClasses();
+  const { upcoming, recorded, isLoading, toggleRegistration } = useLiveClasses();
 
-  const upcoming = dbUpcoming.length > 0 ? dbUpcoming : MOCK_CLASSES.filter((c) => c.status === "upcoming");
-  const recorded = dbRecorded.length > 0 ? dbRecorded : MOCK_CLASSES.filter((c) => c.status === "recorded");
   const nextClass = upcoming[0];
 
   return (
@@ -231,7 +151,7 @@ export default function AulasAoVivoPage() {
               ) : (
                 <EmptyState
                   icon={IconVideo}
-                  title="Nenhuma aula agendada"
+                  title="Nenhuma aula ao vivo agendada"
                   description="Novas aulas ao vivo serão anunciadas em breve."
                 />
               )}

@@ -1,14 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/shared/page-header";
+import { EmptyState } from "@/components/shared";
 import { CourseCard } from "@/features/courses/components/course-card";
 import { useCourses, useLearningPaths } from "@/features/courses/hooks/use-courses";
-import { MOCK_COURSES, MOCK_LEARNING_PATHS } from "@/features/courses/data/mock-courses";
 import type { Course } from "@/features/courses/types";
 import { IconRoute, IconBook2, IconTarget, IconArrowRight } from "@tabler/icons-react";
 
@@ -18,39 +19,26 @@ export default function TrilhasPage() {
 
   const isLoading = coursesLoading || pathsLoading;
 
-  // Use real data if available, fall back to mocks
-  const courses: Course[] = dbCourses && dbCourses.length > 0 ? dbCourses : MOCK_COURSES;
+  const courses: Course[] = dbCourses ?? [];
 
-  // Build learning path + course list
-  const paths =
-    dbPaths && dbPaths.length > 0
-      ? dbPaths.map((p) => {
-          const pathCourses = p.courseIds.map((id) => courses.find((c) => c.id === id)).filter(Boolean) as Course[];
-          const completedCourses = pathCourses.filter((c) => c.status === "concluido").length;
-          const progress =
-            pathCourses.length > 0
-              ? Math.round(pathCourses.reduce((acc, c) => acc + (c.progress ?? 0), 0) / pathCourses.length)
-              : 0;
-          return {
-            id: p.id,
-            title: p.title,
-            description: p.description,
-            totalCourses: pathCourses.length,
-            completedCourses,
-            progress,
-            courses: pathCourses,
-          };
-        })
-      : MOCK_LEARNING_PATHS.map((p) => {
-          const MOCK_PATH_COURSE_IDS: Record<string, string[]> = {
-            lp1: ["c1", "c2"],
-            lp2: ["c3", "c4", "c5", "c6"],
-            lp3: ["c7", "c8"],
-          };
-          const courseIds = MOCK_PATH_COURSE_IDS[p.id] ?? [];
-          const pathCourses = courseIds.map((id) => courses.find((c) => c.id === id)).filter(Boolean) as Course[];
-          return { ...p, courses: pathCourses };
-        });
+  // Build learning path + course list from real DB paths only
+  const paths = (dbPaths ?? []).map((p) => {
+    const pathCourses = p.courseIds.map((id) => courses.find((c) => c.id === id)).filter(Boolean) as Course[];
+    const completedCourses = pathCourses.filter((c) => c.status === "concluido").length;
+    const progress =
+      pathCourses.length > 0
+        ? Math.round(pathCourses.reduce((acc, c) => acc + (c.progress ?? 0), 0) / pathCourses.length)
+        : 0;
+    return {
+      id: p.id,
+      title: p.title,
+      description: p.description,
+      totalCourses: pathCourses.length,
+      completedCourses,
+      progress,
+      courses: pathCourses,
+    };
+  });
 
   if (isLoading) {
     return (
@@ -74,7 +62,25 @@ export default function TrilhasPage() {
         description="Caminhos estruturados para desenvolver competências completas"
       />
 
-      {paths.map((path) => (
+      {paths.length === 0 ? (
+        <Card>
+          <CardContent className="p-0">
+            <EmptyState
+              icon={IconRoute}
+              title="Nenhuma trilha disponível ainda"
+              description="As trilhas de aprendizado serão publicadas em breve. Enquanto isso, explore os cursos avulsos do Academy Pass."
+            >
+              <Button asChild size="sm" className="gap-1.5">
+                <Link href="/explorar">
+                  <IconBook2 className="size-4" />
+                  Explorar cursos
+                </Link>
+              </Button>
+            </EmptyState>
+          </CardContent>
+        </Card>
+      ) : (
+        paths.map((path) => (
         <div key={path.id} className="space-y-4">
           <Card className="gap-0 overflow-hidden py-0">
             <div className="border-b border-black/[0.04] bg-gradient-to-r from-[#BAF241]/10 to-black/5 p-6">
@@ -121,7 +127,8 @@ export default function TrilhasPage() {
             </CardContent>
           </Card>
         </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }
